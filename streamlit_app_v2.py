@@ -22,8 +22,7 @@ def load_object_from_github(file_url, github_token):
         "Authorization": f"token {github_token}",
         "Accept": "application/vnd.github.v3.raw"
     }
-    print(f"Fetching: {file_url}")  # Adicione este log
-    response = requests.get(file_url, headers=headers)
+    response = requests.get(file_url)#, headers=headers)
     response.raise_for_status()  # Verifica se a requisição foi bem-sucedida
     return pickle.loads(response.content)
 
@@ -33,9 +32,11 @@ def load_csv_from_github(file_url, github_token):
         "Authorization": f"token {github_token}",
         "Accept": "application/vnd.github.v3.raw"
     }
-    response = requests.get(file_url, headers=headers)
+    response = requests.get(file_url)#, headers=headers)
     response.raise_for_status()  # Verifica se a requisição foi bem-sucedida
     return pd.read_csv(StringIO(response.text))
+
+# https://raw.githubusercontent.com/fredprada/tcc/main/model_xgb_cooler.pkl
 
 # URL dos arquivos no GitHub
 base_url = "https://raw.githubusercontent.com/fredprada/tcc/main/"
