@@ -35,9 +35,6 @@ def load_csv_from_github(file_url, github_token):
     response = requests.get(file_url)#, headers=headers)
     response.raise_for_status()  # Verifica se a requisição foi bem-sucedida
     return pd.read_csv(StringIO(response.text))
-
-# https://raw.githubusercontent.com/fredprada/tcc/main/model_xgb_cooler.pkl
-
 # URL dos arquivos no GitHub
 base_url = "https://raw.githubusercontent.com/fredprada/tcc/main/"
 model_xgb_cooler_url = base_url + "model_xgb_cooler.pkl"
