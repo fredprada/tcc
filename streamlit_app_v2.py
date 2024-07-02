@@ -22,6 +22,7 @@ def load_object_from_github(file_url, github_token):
         "Authorization": f"token {github_token}",
         "Accept": "application/vnd.github.v3.raw"
     }
+    print(f"Fetching: {file_url}")  # Adicione este log
     response = requests.get(file_url, headers=headers)
     response.raise_for_status()  # Verifica se a requisição foi bem-sucedida
     return pickle.loads(response.content)
