@@ -1,0 +1,13 @@
+streamlit
+altair
+pandas
+numpy
+pickle
+requests
+StringIO
+time
+sklearn
+matplotlib
+seaborn
+tslearn
+joblib
