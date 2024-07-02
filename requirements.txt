@@ -2,11 +2,9 @@ streamlit
 altair
 pandas
 numpy
-pickle
+pickle5
 requests
-StringIO
-time
-sklearn
+scikit-learn
 matplotlib
 seaborn
 tslearn
