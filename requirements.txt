@@ -2,7 +2,6 @@ streamlit
 altair
 pandas
 numpy
-pickle
 requests
 scikit-learn
 matplotlib
