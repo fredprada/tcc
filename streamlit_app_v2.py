@@ -23,7 +23,7 @@ def load_object_from_github(file_url, github_token):
         "Accept": "application/vnd.github.v3.raw"
     }
     response = requests.get(file_url, headers=headers)
-    # response.raise_for_status()  # Verifica se a requisição foi bem-sucedida
+    response.raise_for_status()  # Verifica se a requisição foi bem-sucedida
     return pickle.loads(response.content)
 
 # Função para carregar um arquivo CSV do GitHub
@@ -33,7 +33,7 @@ def load_csv_from_github(file_url, github_token):
         "Accept": "application/vnd.github.v3.raw"
     }
     response = requests.get(file_url, headers=headers)
-    # response.raise_for_status()  # Verifica se a requisição foi bem-sucedida
+    response.raise_for_status()  # Verifica se a requisição foi bem-sucedida
     return pd.read_csv(StringIO(response.text))
 
 # URL dos arquivos no GitHub
