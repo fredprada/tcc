@@ -46,6 +46,7 @@ scaler_url = base_url + "scaler.pkl"
 test_data_url = base_url + "x_test_final.csv"
 df_tratado_pd_not_optimal_30_rand_instances_url = base_url + "df_tratado_pd_not_optimal_30_rand_instances.csv"
 df_sintetico_concatenado_url = base_url + "df_sintetico_concatenado.csv"
+df_sintetico_concatenado_sem_scaler_url = base_url + "df_sintetico_concatenado_sem_scaler.csv"
 
 # Token de acesso ao GitHub
 GITHUB_TOKEN = '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'
@@ -61,12 +62,13 @@ scaler = load_object_from_github(scaler_url, GITHUB_TOKEN)
 test_data = load_csv_from_github(test_data_url, GITHUB_TOKEN)
 df_tratado = load_csv_from_github(df_tratado_pd_not_optimal_30_rand_instances_url, GITHUB_TOKEN)
 df_sintetico_concatenado = load_csv_from_github(df_sintetico_concatenado_url, GITHUB_TOKEN)
+df_sintetico_concatenado_sem_scaler = load_csv_from_github(df_sintetico_concatenado_sem_scaler_url, GITHUB_TOKEN)
 
 # Interface do Streamlit
 st.title('Predição de Falhas')
 
 # Lista de instâncias
-lista_instancias = df_tratado[['instancia']].drop_duplicates().sort_values(by='instancia')
+lista_instancias = df_sintetico_concatenado[['instancia']].drop_duplicates().sort_values(by='instancia')
 
 # Selecionar instâncias para teste
 instancias_para_teste = st.multiselect(
@@ -156,7 +158,8 @@ else:
     X_test_pivoted_with_results['instancia'] = instancias
 
     # Filtrar os resultados do ciclo selecionado
-    resultados_ciclos = X_test_pivoted_with_results[X_test_pivoted_with_results['ciclo_ajustado'] == num_ciclos]
+    # resultados_ciclos = X_test_pivoted_with_results[X_test_pivoted_with_results['ciclo_ajustado'] == num_ciclos]
+    resultados_ciclos = df_sintetico_concatenado_sem_scaler[df_sintetico_concatenado_sem_scaler['ciclo_sequencial'] == num_ciclos]
 
     # Função para converter predições em mensagens
     def get_status_message(prediction, sensor_type):
