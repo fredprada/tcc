@@ -68,7 +68,7 @@ df_sintetico_concatenado_sem_scaler = load_csv_from_github(df_sintetico_concaten
 st.title('Predição de Falhas')
 
 # Lista de instâncias
-# lista_instancias = df_sintetico_concatenado_sem_scaler[['serie_id']].drop_duplicates().sort_values(by='serie_id')
+# lista_instancias = df_sintetico_concatenado_sem_scaler[['id']].drop_duplicates().sort_values(by='id')
 lista_instancias = list(range(1, 41))
 
 # Selecionar instâncias para teste
@@ -100,7 +100,7 @@ else:
     pivot_x_train = df_tratado.pivot(index=['instancia', 'ciclo_ajustado'], columns='sensor', values='valor').reset_index()
     # X_test_pivoted = df_filtrado.pivot(index=['instancia', 'ciclo_ajustado'], columns='sensor', values='valor').reset_index()
     X_test_pivoted = df_sintetico_concatenado.copy()
-    X_test_pivoted = X_test_pivoted[(X_test_pivoted['serie_id'].isin(instancias_para_teste)) &  (X_test_pivoted['ciclo_sequencial'] <= num_ciclos)]
+    X_test_pivoted = X_test_pivoted[(X_test_pivoted['id'].isin(instancias_para_teste)) & (X_test_pivoted['ciclo_sequencial'] <= num_ciclos)]
 
     # Salvar a coluna de instância antes de removê-la
     instancias = X_test_pivoted['instancia']
