@@ -99,7 +99,7 @@ else:
     # Pivotar os dados para preparar para o modelo
     pivot_x_train = df_tratado.pivot(index=['instancia', 'ciclo_ajustado'], columns='sensor', values='valor').reset_index()
     # X_test_pivoted = df_filtrado.pivot(index=['instancia', 'ciclo_ajustado'], columns='sensor', values='valor').reset_index()
-    X_test_pivoted = df_sintetico_concatenado_sem_scaler.copy()
+    X_test_pivoted = df_sintetico_concatenado.copy()
     X_test_pivoted = X_test_pivoted[(X_test_pivoted['id'].isin(instancias_para_teste)) & (X_test_pivoted['ciclo_sequencial'] <= num_ciclos)]
 
     # Salvar a coluna de instância antes de removê-la
