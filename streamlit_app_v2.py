@@ -104,6 +104,7 @@ else:
 
     # Salvar a coluna de instância antes de removê-la
     instancias = X_test_pivoted['instancia']
+    ids = X_test_pivoted['id']
 
     # Aplicar o scaler separadamente para cada sensor
     scalers = {sensor: MinMaxScaler() for sensor in pivot_x_train.columns if sensor not in ['instancia', 'ciclo_ajustado']}
@@ -120,7 +121,7 @@ else:
     #     else:
     #         X_test_pivoted[sensor] = 0
 
-    X_test_pivoted = X_test_pivoted.drop(columns=['instancia', 'ciclo_sequencial'])
+    X_test_pivoted = X_test_pivoted.drop(columns=['instancia', 'ciclo_sequencial', 'id'])
 
     # Aplicar cada modelo e prever o resultado
     cooler_predictions = model_xgb_cooler.predict(X_test_pivoted)
@@ -163,6 +164,7 @@ else:
 
     # Adicionar a coluna de instância de volta ao DataFrame
     X_test_pivoted_with_results['instancia'] = instancias
+    X_test_pivoted_with_results['id'] = ids
 
     # Filtrar os resultados do ciclo selecionado
     resultados_ciclos = X_test_pivoted_with_results[X_test_pivoted_with_results['ciclo_sequencial'] == num_ciclos]
