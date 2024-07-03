@@ -74,14 +74,14 @@ lista_instancias = list(range(1, 41))
 # Selecionar instâncias para teste
 instancias_para_teste = st.multiselect(
     "Qual instância deseja ver?", 
-    # options=['Selecionar Tudo'] + lista_instancias['instancia'].tolist(),
-    options=['Selecionar Tudo'] + lista_instancias,
+    options=['Selecionar Tudo'] + lista_instancias, 
     default=[42]
 )
+# options=['Selecionar Tudo'] + lista_instancias['instancia'].tolist(),
 
 # Tratar a opção "Selecionar Tudo"
 if 'Selecionar Tudo' in instancias_para_teste:
-    instancias_para_teste = lista_instancias['instancia'].tolist()
+    instancias_para_teste = lista_instancias
 
 if len(instancias_para_teste) == 0:
     st.write("Selecione pelo menos uma instância para visualizar os dados.")
