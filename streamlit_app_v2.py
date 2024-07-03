@@ -1,3 +1,6 @@
+# Esta versão utiliza o modelo de classificação XGBoost olhando para todas as categorias
+# Esta versão foi feita até 03/07
+
 import streamlit as st
 import altair as alt
 import pandas as pd
