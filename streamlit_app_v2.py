@@ -45,7 +45,7 @@ model_xgb_accumulator_url = base_url + "model_xgb_accumulator.pkl"
 scaler_url = base_url + "scaler.pkl"
 test_data_url = base_url + "x_test_final.csv"
 df_tratado_pd_not_optimal_30_rand_instances_url = base_url + "df_tratado_pd_not_optimal_30_rand_instances.csv"
-df_sintetico_concatenado = base_url + "df_sintetico_concatenado.csv"
+df_sintetico_concatenado_url = base_url + "df_sintetico_concatenado.csv"
 
 # Token de acesso ao GitHub
 GITHUB_TOKEN = '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'
