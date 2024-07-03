@@ -98,10 +98,10 @@ else:
     # Preparar os dados para teste
     # X_test_data = df_filtrado[['sensor', 'instancia', 'valor', 'ciclo_ajustado']] # se necessário pivotar
     # X_test_pivoted = X_test_data.pivot(index=['instancia', 'ciclo_ajustado'], columns='sensor', values='valor').reset_index() # se necessário pivotar
-    X_test_pivoted = test_data.copy()
+    X_test_pivoted = df_tratado.copy()
     
     # Salvar a coluna de instância antes de removê-la
-    instancias = X_test_pivoted['instancia']
+    instancias = df_tratado['instancia']
 
     # Aplicar o scaler separadamente para cada sensor
     scalers = {sensor: MinMaxScaler() for sensor in pivot_x_train.columns if sensor not in ['instancia', 'ciclo_ajustado']}
