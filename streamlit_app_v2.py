@@ -152,7 +152,7 @@ else:
     accumulator_predictions_original = encoder_accumulator.inverse_transform(accumulator_predictions)
 
     # Adicionar as previsões ao DataFrame filtrado
-    X_test_pivoted_with_results = df_sintetico_concatenado_sem_scaler.copy()
+    X_test_pivoted_with_results = df_sintetico_concatenado_sem_scaler[(df_sintetico_concatenado_sem_scaler['id'].isin(instancias_para_teste)) & (df_sintetico_concatenado_sem_scaler['ciclo_sequencial'] <= num_ciclos)]
     X_test_pivoted_with_results['cooler_prediction'] = cooler_predictions_original
     X_test_pivoted_with_results['valve_prediction'] = valve_predictions_original
     X_test_pivoted_with_results['leakage_prediction'] = leakage_predictions_original
