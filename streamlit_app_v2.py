@@ -155,6 +155,10 @@ else:
     X_test_pivoted_with_results['valve_prediction'] = valve_predictions_original
     X_test_pivoted_with_results['leakage_prediction'] = leakage_predictions_original
     X_test_pivoted_with_results['accumulator_prediction'] = accumulator_predictions_original
+    
+    # Verificar as primeiras linhas do DataFrame com previsões
+    st.write("X_test_pivoted_with_results:", X_test_pivoted_with_results.head())
+
 
     # Adicionar a coluna de instância de volta ao DataFrame
     X_test_pivoted_with_results['instancia'] = instancias
