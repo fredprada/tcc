@@ -155,8 +155,8 @@ else:
     X_test_pivoted_with_results['leakage_prediction'] = leakage_predictions_original
     X_test_pivoted_with_results['accumulator_prediction'] = accumulator_predictions_original
     
-    # Verificar as primeiras linhas do DataFrame com previsões
-    st.write("X_test_pivoted_with_results:", X_test_pivoted_with_results)
+    # # Verificar as primeiras linhas do DataFrame com previsões
+    # st.write("X_test_pivoted_with_results:", X_test_pivoted_with_results)
 
     # Adicionar a coluna de instância de volta ao DataFrame
     X_test_pivoted_with_results['instancia'] = instancias
@@ -214,7 +214,7 @@ else:
 
     # Exibir os resultados para cada instância
     for instancia in instancias_para_teste:
-        resultado_instancia = resultados_ciclos[resultados_ciclos['instancia'] == instancia]
+        resultado_instancia = resultados_ciclos[resultados_ciclos['id'] == instancia]
         
         if not resultado_instancia.empty:
             resultado_cooler = resultado_instancia[['cooler_prediction']].values[0][0]
