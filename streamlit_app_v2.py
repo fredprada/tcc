@@ -253,21 +253,21 @@ else:
 
 
     # Adicionar interatividade aos gráficos
-    selection = alt.selection_multi(fields=['instancia'], bind='legend')
+    selection = alt.selection_multi(fields=['id'], bind='legend')
 
     # Organizar os gráficos em 5 por linha
     num_sensores = len(lista_sensores)
     cols = st.columns(6)
 
     for i, sensor in enumerate(lista_sensores):
-        df_filtrado_sensor = X_test_pivoted_with_results[['ciclo_sequencial', 'instancia', sensor]].rename(columns={sensor: 'valor', 'ciclo_sequencial': 'ciclo'})
+        df_filtrado_sensor = X_test_pivoted_with_results[['ciclo_sequencial', 'id', sensor]].rename(columns={sensor: 'valor', 'ciclo_sequencial': 'ciclo'})
         
         # Criar um gráfico Altair com interatividade
         chart = alt.Chart(df_filtrado_sensor).mark_line().encode(
             x='ciclo',
             y='valor',
-            color=alt.Color('instancia:N', legend=alt.Legend(title="Instância")),
-            tooltip=['instancia', 'ciclo', 'valor']
+            color=alt.Color('id:N', legend=alt.Legend(title="Instância")),
+            tooltip=['id', 'ciclo', 'valor']
         ).properties(
             title=f'Sensor: {sensor}'
         ).add_selection(
@@ -276,5 +276,5 @@ else:
             selection
         ).interactive()  # Permite zoom e pan
         
-        with cols[i % 5]:
+        with cols[i % 6]:
             st.altair_chart(chart, use_container_width=True)
