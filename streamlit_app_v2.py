@@ -96,9 +96,10 @@ else:
     pivot_x_train = df_tratado.copy()
 
     # Preparar os dados para teste
-    X_test_data = df_filtrado[['sensor', 'instancia', 'valor', 'ciclo_ajustado']]
-    X_test_pivoted = X_test_data.pivot(index=['instancia', 'ciclo_ajustado'], columns='sensor', values='valor').reset_index()
-
+    # X_test_data = df_filtrado[['sensor', 'instancia', 'valor', 'ciclo_ajustado']] # se necessário pivotar
+    # X_test_pivoted = X_test_data.pivot(index=['instancia', 'ciclo_ajustado'], columns='sensor', values='valor').reset_index() # se necessário pivotar
+    X_test_pivoted = x_test_final.copy()
+    
     # Salvar a coluna de instância antes de removê-la
     instancias = X_test_pivoted['instancia']
 
