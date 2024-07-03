@@ -159,8 +159,7 @@ else:
     X_test_pivoted_with_results['accumulator_prediction'] = accumulator_predictions_original
     
     # Verificar as primeiras linhas do DataFrame com previsões
-    st.write("X_test_pivoted_with_results:", X_test_pivoted_with_results.head())
-
+    st.write("X_test_pivoted_with_results:", X_test_pivoted_with_results)
 
     # Adicionar a coluna de instância de volta ao DataFrame
     X_test_pivoted_with_results['instancia'] = instancias
