@@ -257,11 +257,11 @@ else:
 
     # Organizar os gráficos em 5 por linha
     num_sensores = len(lista_sensores)
-    cols = st.columns(5)
+    cols = st.columns(6)
 
     for i, sensor in enumerate(lista_sensores):
-        df_filtrado_sensor = X_test_pivoted_with_results[X_test_pivoted_with_results['sensor'] == sensor]
-
+        df_filtrado_sensor = X_test_pivoted_with_results[['ciclo_ajustado', 'instancia', sensor]].rename(columns={sensor: 'valor'})
+    
         # Criar um gráfico Altair com interatividade
         chart = alt.Chart(df_filtrado_sensor).mark_line().encode(
             x='ciclo_ajustado',
@@ -275,6 +275,6 @@ else:
         ).transform_filter(
             selection
         ).interactive()  # Permite zoom e pan
-
+    
         with cols[i % 5]:
             st.altair_chart(chart, use_container_width=True)
