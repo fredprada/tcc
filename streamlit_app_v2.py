@@ -119,6 +119,7 @@ else:
     #     else:
     #         X_test_pivoted[sensor] = 0
 
+    X_test_pivoted = X_test_pivoted[X_test_pivoted['serie_id'].isin(instancias_para_teste)]
     X_test_pivoted = X_test_pivoted.drop(columns=['instancia', 'ciclo_sequencial'])
 
     # Aplicar cada modelo e prever o resultado
