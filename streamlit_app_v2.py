@@ -60,6 +60,7 @@ scaler = load_object_from_github(scaler_url, GITHUB_TOKEN)
 # Carregar os dados de teste
 test_data = load_csv_from_github(test_data_url, GITHUB_TOKEN)
 df_tratado = load_csv_from_github(df_tratado_pd_not_optimal_30_rand_instances_url, GITHUB_TOKEN)
+df_sintetico_concatenado = load_csv_from_github(df_sintetico_concatenado_url, GITHUB_TOKEN)
 
 # Interface do Streamlit
 st.title('Predição de Falhas')
@@ -93,10 +94,11 @@ else:
 
     # Pivotar os dados para preparar para o modelo
     pivot_x_train = df_tratado.pivot(index=['instancia', 'ciclo_ajustado'], columns='sensor', values='valor').reset_index()
-    X_test_pivoted = df_filtrado.pivot(index=['instancia', 'ciclo_ajustado'], columns='sensor', values='valor').reset_index()
-
+    # X_test_pivoted = df_filtrado.pivot(index=['instancia', 'ciclo_ajustado'], columns='sensor', values='valor').reset_index()
+    X_test_pivoted = df_sintetico_concatenado.copy()
+    
     # Salvar a coluna de instância antes de removê-la
-    instancias = X_test_pivoted['instancia']
+    # instancias = X_test_pivoted['instancia']
 
     # Aplicar o scaler separadamente para cada sensor
     scalers = {sensor: MinMaxScaler() for sensor in pivot_x_train.columns if sensor not in ['instancia', 'ciclo_ajustado']}
@@ -106,12 +108,12 @@ else:
         if sensor in pivot_x_train.columns:
             pivot_x_train[sensor] = scalers[sensor].fit_transform(pivot_x_train[[sensor]])
 
-    # Aplicar o scaler nos dados de teste
-    for sensor in scalers:
-        if sensor in X_test_pivoted.columns:
-            X_test_pivoted[sensor] = scalers[sensor].transform(X_test_pivoted[[sensor]])
-        else:
-            X_test_pivoted[sensor] = 0
+    # # Aplicar o scaler nos dados de teste
+    # for sensor in scalers:
+    #     if sensor in X_test_pivoted.columns:
+    #         X_test_pivoted[sensor] = scalers[sensor].transform(X_test_pivoted[[sensor]])
+    #     else:
+    #         X_test_pivoted[sensor] = 0
 
     X_test_pivoted = X_test_pivoted.drop(columns=['instancia'])
 
