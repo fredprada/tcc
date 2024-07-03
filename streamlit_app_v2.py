@@ -59,7 +59,7 @@ scaler = load_object_from_github(scaler_url, GITHUB_TOKEN)
 
 # Carregar os dados de teste
 test_data = load_csv_from_github(test_data_url, GITHUB_TOKEN)
-df_tratado = load_csv_from_github(df_sintetico_concatenado, GITHUB_TOKEN)
+df_tratado = load_csv_from_github(df_tratado_pd_not_optimal_30_rand_instances_url, GITHUB_TOKEN)
 
 # Interface do Streamlit
 st.title('Predição de Falhas')
