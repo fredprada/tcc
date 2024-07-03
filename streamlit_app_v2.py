@@ -68,7 +68,8 @@ df_sintetico_concatenado_sem_scaler = load_csv_from_github(df_sintetico_concaten
 st.title('Predição de Falhas')
 
 # Lista de instâncias
-lista_instancias = df_sintetico_concatenado_sem_scaler[['serie_id']].drop_duplicates().sort_values(by='serie_id')
+# lista_instancias = df_sintetico_concatenado_sem_scaler[['serie_id']].drop_duplicates().sort_values(by='serie_id')
+lista_instancias = list(range(1, 41))
 
 # Selecionar instâncias para teste
 instancias_para_teste = st.multiselect(
