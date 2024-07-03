@@ -100,7 +100,8 @@ else:
     pivot_x_train = df_tratado.pivot(index=['instancia', 'ciclo_ajustado'], columns='sensor', values='valor').reset_index()
     # X_test_pivoted = df_filtrado.pivot(index=['instancia', 'ciclo_ajustado'], columns='sensor', values='valor').reset_index()
     X_test_pivoted = df_sintetico_concatenado.copy()
-    
+    X_test_pivoted = X_test_pivoted[(X_test_pivoted['serie_id'].isin(instancias_para_teste)) &  (X_test_pivoted['ciclo_sequencial'] <= num_ciclos)]
+
     # Salvar a coluna de instância antes de removê-la
     instancias = X_test_pivoted['instancia']
 
@@ -119,7 +120,6 @@ else:
     #     else:
     #         X_test_pivoted[sensor] = 0
 
-    X_test_pivoted = X_test_pivoted[X_test_pivoted['serie_id'].isin(instancias_para_teste)]
     X_test_pivoted = X_test_pivoted.drop(columns=['instancia', 'ciclo_sequencial'])
 
     # Aplicar cada modelo e prever o resultado
