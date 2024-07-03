@@ -260,14 +260,14 @@ else:
     cols = st.columns(6)
 
     for i, sensor in enumerate(lista_sensores):
-        df_filtrado_sensor = X_test_pivoted_with_results[['ciclo_ajustado', 'instancia', sensor]].rename(columns={sensor: 'valor'})
-    
+        df_filtrado_sensor = X_test_pivoted_with_results[['ciclo_sequencial', 'instancia', sensor]].rename(columns={sensor: 'valor', 'ciclo_sequencial': 'ciclo'})
+        
         # Criar um gráfico Altair com interatividade
         chart = alt.Chart(df_filtrado_sensor).mark_line().encode(
-            x='ciclo_ajustado',
+            x='ciclo',
             y='valor',
             color=alt.Color('instancia:N', legend=alt.Legend(title="Instância")),
-            tooltip=['instancia', 'ciclo_ajustado', 'valor']
+            tooltip=['instancia', 'ciclo', 'valor']
         ).properties(
             title=f'Sensor: {sensor}'
         ).add_selection(
@@ -275,6 +275,6 @@ else:
         ).transform_filter(
             selection
         ).interactive()  # Permite zoom e pan
-    
+        
         with cols[i % 5]:
             st.altair_chart(chart, use_container_width=True)
