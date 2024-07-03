@@ -68,7 +68,7 @@ df_sintetico_concatenado_sem_scaler = load_csv_from_github(df_sintetico_concaten
 st.title('Predição de Falhas')
 
 # Lista de instâncias
-lista_instancias = df_sintetico_concatenado[['instancia']].drop_duplicates().sort_values(by='instancia')
+lista_instancias = df_sintetico_concatenado_sem_scaler[['serie_id']].drop_duplicates().sort_values(by='serie_id')
 
 # Selecionar instâncias para teste
 instancias_para_teste = st.multiselect(
@@ -148,7 +148,7 @@ else:
     accumulator_predictions_original = encoder_accumulator.inverse_transform(accumulator_predictions)
 
     # Adicionar as previsões ao DataFrame filtrado
-    X_test_pivoted_with_results = X_test_pivoted.copy()
+    X_test_pivoted_with_results = df_sintetico_concatenado_sem_scaler.copy()
     X_test_pivoted_with_results['cooler_prediction'] = cooler_predictions_original
     X_test_pivoted_with_results['valve_prediction'] = valve_predictions_original
     X_test_pivoted_with_results['leakage_prediction'] = leakage_predictions_original
@@ -158,8 +158,7 @@ else:
     X_test_pivoted_with_results['instancia'] = instancias
 
     # Filtrar os resultados do ciclo selecionado
-    # resultados_ciclos = X_test_pivoted_with_results[X_test_pivoted_with_results['ciclo_ajustado'] == num_ciclos]
-    resultados_ciclos = df_sintetico_concatenado_sem_scaler[df_sintetico_concatenado_sem_scaler['ciclo_sequencial'] == num_ciclos]
+    resultados_ciclos = X_test_pivoted_with_results[X_test_pivoted_with_results['ciclo_sequencial'] == num_ciclos]
 
     # Função para converter predições em mensagens
     def get_status_message(prediction, sensor_type):
