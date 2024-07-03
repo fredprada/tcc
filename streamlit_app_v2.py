@@ -90,9 +90,6 @@ else:
     max_ciclo = 60
     num_ciclos = st.slider("Selecione o número máximo de ciclos", 0, max_ciclo, max_ciclo)
 
-    # Filtrar o DataFrame com as instâncias selecionadas e o número de ciclos
-    df_filtrado = df_tratado[(df_tratado['instancia'].isin(instancias_para_teste)) & (df_tratado['ciclo_ajustado'] <= num_ciclos)]
-
     # Lista de sensores
     lista_sensores = ['ps1', 'ps2', 'ps3', 'ps4', 'ps5', 'ps6', 'eps1', 'fs1', 'fs2', 'ts1', 'ts2', 'ts3', 'ts4', 'vs1', 'ce', 'cp', 'se']
 
@@ -263,7 +260,7 @@ else:
     cols = st.columns(5)
 
     for i, sensor in enumerate(lista_sensores):
-        df_filtrado_sensor = df_filtrado[df_filtrado['sensor'] == sensor]
+        df_filtrado_sensor = X_test_pivoted_with_results[X_test_pivoted_with_results['sensor'] == sensor]
 
         # Criar um gráfico Altair com interatividade
         chart = alt.Chart(df_filtrado_sensor).mark_line().encode(
