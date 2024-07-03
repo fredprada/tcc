@@ -44,6 +44,7 @@ model_xgb_accumulator_url = base_url + "model_xgb_accumulator.pkl"
 scaler_url = base_url + "scaler.pkl"
 test_data_url = base_url + "x_test_final.csv"
 df_tratado_pd_not_optimal_30_rand_instances_url = base_url + "df_tratado_pd_not_optimal_30_rand_instances.csv"
+df_sintetico_concatenado = base_url + "df_sintetico_concatenado.csv"
 
 # Token de acesso ao GitHub
 GITHUB_TOKEN = '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'
@@ -57,7 +58,7 @@ scaler = load_object_from_github(scaler_url, GITHUB_TOKEN)
 
 # Carregar os dados de teste
 test_data = load_csv_from_github(test_data_url, GITHUB_TOKEN)
-df_tratado = load_csv_from_github(df_tratado_pd_not_optimal_30_rand_instances_url, GITHUB_TOKEN)
+df_tratado = load_csv_from_github(df_sintetico_concatenado, GITHUB_TOKEN)
 
 # Interface do Streamlit
 st.title('Predição de Falhas')
@@ -80,7 +81,7 @@ if len(instancias_para_teste) == 0:
     st.write("Selecione pelo menos uma instância para visualizar os dados.")
 else:
     # Adicionar um slider para selecionar o número de ciclos
-    max_ciclo = int(df_tratado['ciclo_ajustado'].max())
+    max_ciclo = 60
     num_ciclos = st.slider("Selecione o número máximo de ciclos", 0, max_ciclo, max_ciclo)
 
     # Filtrar o DataFrame com as instâncias selecionadas e o número de ciclos
@@ -90,7 +91,8 @@ else:
     lista_sensores = df_tratado['sensor'].drop_duplicates().tolist()
 
     # Preparar os dados para treino
-    pivot_x_train = df_tratado.pivot(index=['instancia', 'ciclo_ajustado'], columns='sensor', values='valor').reset_index()
+    # pivot_x_train = df_tratado.pivot(index=['instancia', 'ciclo_ajustado'], columns='sensor', values='valor').reset_index() # se necessário pivotar
+    pivot_x_train = df_tratado.copy()
 
     # Preparar os dados para teste
     X_test_data = df_filtrado[['sensor', 'instancia', 'valor', 'ciclo_ajustado']]
