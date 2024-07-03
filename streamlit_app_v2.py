@@ -74,7 +74,8 @@ lista_instancias = list(range(1, 41))
 # Selecionar instâncias para teste
 instancias_para_teste = st.multiselect(
     "Qual instância deseja ver?", 
-    options=['Selecionar Tudo'] + lista_instancias['instancia'].tolist(),
+    # options=['Selecionar Tudo'] + lista_instancias['instancia'].tolist(),
+    options=['Selecionar Tudo'] + lista_instancias,
     default=[42]
 )
 
