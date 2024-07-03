@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 import pickle
 import requests
-from io import StringIO
+from io import StringIO, BytesIO
 import time
 from sklearn.preprocessing import MinMaxScaler
 import matplotlib.pyplot as plt
@@ -35,6 +35,7 @@ def load_csv_from_github(file_url, github_token):
     response = requests.get(file_url)#, headers=headers)
     response.raise_for_status()  # Verifica se a requisição foi bem-sucedida
     return pd.read_csv(StringIO(response.text))
+
 # URL dos arquivos no GitHub
 base_url = "https://raw.githubusercontent.com/fredprada/tcc/main/"
 model_xgb_cooler_url = base_url + "model_xgb_cooler.pkl"
@@ -88,27 +89,22 @@ else:
     df_filtrado = df_tratado[(df_tratado['instancia'].isin(instancias_para_teste)) & (df_tratado['ciclo_ajustado'] <= num_ciclos)]
 
     # Lista de sensores
-    # lista_sensores = df_tratado['sensor'].drop_duplicates().tolist() # se necessario
     lista_sensores = ['ps1', 'ps2', 'ps3', 'ps4', 'ps5', 'ps6', 'eps1', 'fs1', 'fs2', 'ts1', 'ts2', 'ts3', 'ts4', 'vs1', 'ce', 'cp', 'se']
 
-    # Preparar os dados para treino
-    # pivot_x_train = df_tratado.pivot(index=['instancia', 'ciclo_ajustado'], columns='sensor', values='valor').reset_index() # se necessário pivotar
-    pivot_x_train = df_tratado.copy()
+    # Pivotar os dados para preparar para o modelo
+    pivot_x_train = df_tratado.pivot(index=['instancia', 'ciclo_ajustado'], columns='sensor', values='valor').reset_index()
+    X_test_pivoted = df_filtrado.pivot(index=['instancia', 'ciclo_ajustado'], columns='sensor', values='valor').reset_index()
 
-    # Preparar os dados para teste
-    # X_test_data = df_filtrado[['sensor', 'instancia', 'valor', 'ciclo_ajustado']] # se necessário pivotar
-    # X_test_pivoted = X_test_data.pivot(index=['instancia', 'ciclo_ajustado'], columns='sensor', values='valor').reset_index() # se necessário pivotar
-    X_test_pivoted = df_tratado.copy()
-    
     # Salvar a coluna de instância antes de removê-la
-    instancias = df_tratado['instancia']
+    instancias = X_test_pivoted['instancia']
 
     # Aplicar o scaler separadamente para cada sensor
     scalers = {sensor: MinMaxScaler() for sensor in pivot_x_train.columns if sensor not in ['instancia', 'ciclo_ajustado']}
 
     # Aplicar o scaler nos dados de treino
     for sensor in scalers:
-        pivot_x_train[sensor] = scalers[sensor].fit_transform(pivot_x_train[[sensor]])
+        if sensor in pivot_x_train.columns:
+            pivot_x_train[sensor] = scalers[sensor].fit_transform(pivot_x_train[[sensor]])
 
     # Aplicar o scaler nos dados de teste
     for sensor in scalers:
@@ -124,9 +120,6 @@ else:
     valve_predictions = model_xgb_valve.predict(X_test_pivoted)
     leakage_predictions = model_xgb_leakage.predict(X_test_pivoted)
     accumulator_predictions = model_xgb_accumulator.predict(X_test_pivoted)
-
-    import requests
-    from io import BytesIO
 
     def load_from_github(file_url):
         response = requests.get(file_url)
