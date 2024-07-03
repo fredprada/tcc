@@ -88,7 +88,8 @@ else:
     df_filtrado = df_tratado[(df_tratado['instancia'].isin(instancias_para_teste)) & (df_tratado['ciclo_ajustado'] <= num_ciclos)]
 
     # Lista de sensores
-    lista_sensores = df_tratado['sensor'].drop_duplicates().tolist()
+    # lista_sensores = df_tratado['sensor'].drop_duplicates().tolist() # se necessario
+    lista_sensores = ['ps1', 'ps2', 'ps3', 'ps4', 'ps5', 'ps6', 'eps1', 'fs1', 'fs2', 'ts1', 'ts2', 'ts3', 'ts4', 'vs1', 'ce', 'cp', 'se']
 
     # Preparar os dados para treino
     # pivot_x_train = df_tratado.pivot(index=['instancia', 'ciclo_ajustado'], columns='sensor', values='valor').reset_index() # se necessário pivotar
