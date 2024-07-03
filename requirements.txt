@@ -8,3 +8,4 @@ matplotlib
 seaborn
 tslearn
 joblib
+xgboost
