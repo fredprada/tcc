@@ -98,7 +98,7 @@ else:
     X_test_pivoted = df_sintetico_concatenado.copy()
     
     # Salvar a coluna de instância antes de removê-la
-    # instancias = X_test_pivoted['instancia']
+    instancias = X_test_pivoted['instancia']
 
     # Aplicar o scaler separadamente para cada sensor
     scalers = {sensor: MinMaxScaler() for sensor in pivot_x_train.columns if sensor not in ['instancia', 'ciclo_ajustado']}
