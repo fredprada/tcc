@@ -66,8 +66,8 @@ test_data = load_csv_from_github(test_data_url, GITHUB_TOKEN)
 df_tratado = load_csv_from_github(df_tratado_pd_not_optimal_30_rand_instances_url, GITHUB_TOKEN)
 df_sintetico_concatenado = load_csv_from_github(df_sintetico_concatenado_url, GITHUB_TOKEN)
 df_sintetico_concatenado_sem_scaler = load_csv_from_github(df_sintetico_concatenado_sem_scaler_url, GITHUB_TOKEN)
-st.write(df_tratado)
-st.write(df_sintetico_concatenado_sem_scaler)
+# st.write(df_tratado)
+# st.write(df_sintetico_concatenado_sem_scaler)
 
 # Interface do Streamlit
 st.title('Predição de Falhas')
