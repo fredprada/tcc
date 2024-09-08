@@ -107,26 +107,23 @@ else:
                 (df_sintetico_concatenado_sem_scaler['ciclo_sequencial'] <= num_ciclos)
             ]
 
-            # Criar 4 colunas e 5 linhas para os 17 gráficos
-            num_sensores = len(lista_sensores)
-            for i in range(0, num_sensores, 4):
-                cols = st.columns(4)  # Criar uma nova linha com 4 colunas
-                for j, sensor in enumerate(lista_sensores[i:i+4]):
-                    df_filtrado_sensor = X_test_pivoted_with_results[['ciclo_sequencial', 'id', sensor]].rename(columns={sensor: 'valor', 'ciclo_sequencial': 'ciclo'})
+            # Atualizar os gráficos dinamicamente organizando-os 4 por linha e 5 linhas
+            for idx, sensor in enumerate(lista_sensores):
+                df_filtrado_sensor = X_test_pivoted_with_results[['ciclo_sequencial', 'id', sensor]].rename(columns={sensor: 'valor', 'ciclo_sequencial': 'ciclo'})
 
-                    # Definir o intervalo fixo para o eixo y
-                    y_max = df_sintetico_concatenado_sem_scaler[sensor].max() * 1.1
-                    y_min = df_sintetico_concatenado_sem_scaler[sensor].min() * 0.9
+                # Criar um gráfico Altair com interatividade
+                chart = alt.Chart(df_filtrado_sensor).mark_line().encode(
+                    x='ciclo',
+                    y=alt.Y('valor', title=f'Valor ({unidades_sensores[idx]})'),
+                    color=alt.Color('id:N', legend=alt.Legend(title="Instância")),
+                    tooltip=['id', 'ciclo', 'valor']
+                ).properties(
+                    title=f'{nomes_sensores[idx]}'
+                ).interactive()  # Permite zoom e pan
 
-                    # Criar um gráfico Altair com interatividade
-                    chart = alt.Chart(df_filtrado_sensor).mark_line().encode(
-                        x='ciclo',
-                        y=alt.Y('valor', title=f'Valor ({unidades_sensores[i+j]})', scale=alt.Scale(domain=[y_min, y_max])),
-                        color=alt.Color('id:N', legend=alt.Legend(title="Instância")),
-                        tooltip=['id', 'ciclo', 'valor']
-                    ).properties(
-                        title=f'{nomes_sensores[i+j]}'
-                    ).interactive()  # Permite zoom e pan
+                # Organizar em linhas de 4 gráficos
+                if idx % 4 == 0:
+                    cols = st.columns(4)  # Criar uma nova linha de 4 colunas
 
-                    # Exibir o gráfico na coluna correta
-                    cols[j].altair_chart(chart, use_container_width=True)
+                # Exibir o gráfico na coluna correta
+                cols[idx % 4].altair_chart(chart, use_container_width=True)
