@@ -209,7 +209,6 @@ else:
             # Aplicar estilo e atualizar a tabela
             def align_left(df):
                 return df.style.set_properties(**{'text-align': 'left'})
-            tabela_placeholder.empty() 
             
             # Atualizar a tabela no espaço reservado
             tabela_placeholder.table(align_left(resultados_df).set_table_styles([{
