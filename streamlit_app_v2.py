@@ -271,26 +271,26 @@ else:
                 ).properties(
                     title=title,
                     width=800,
-                    height=150
+                    height=120
                 )
                 return chart
 
-            # Limpar e atualizar os placeholders com os gráficos de status
+            # Exibir gráficos de status timeline logo abaixo da tabela
             cooler_chart = plot_status_timeline(X_test_pivoted_with_results, 'cooler_prediction', 'Status Cooler', color_scale_cooler)
             valve_chart = plot_status_timeline(X_test_pivoted_with_results, 'valve_prediction', 'Status Válvula', color_scale_valve)
             leakage_chart = plot_status_timeline(X_test_pivoted_with_results, 'leakage_prediction', 'Status Vazamento', color_scale_leakage)
             accumulator_chart = plot_status_timeline(X_test_pivoted_with_results, 'accumulator_prediction', 'Status Acumulador', color_scale_accumulator)
-    
-            # Atualizar os placeholders com os gráficos
+            
+            # Limpar e atualizar os placeholders com os gráficos de status
             status_placeholders[0].altair_chart(cooler_chart, use_container_width=True)
             status_placeholders[1].altair_chart(valve_chart, use_container_width=True)
             status_placeholders[2].altair_chart(leakage_chart, use_container_width=True)
             status_placeholders[3].altair_chart(accumulator_chart, use_container_width=True)
 
-            # Atualizar os gráficos na coluna 0 (gráficos 0 a 4)
+            # Agora os gráficos dos sensores serão exibidos depois dos gráficos de status
             for idx, sensor in enumerate(lista_sensores[0:4]):  # Sensores 0 a 4
                 df_filtrado_sensor = X_test_pivoted_with_results[['ciclo_sequencial', 'id', sensor]].rename(columns={sensor: 'valor', 'ciclo_sequencial': 'ciclo'})
-
+            
                 # Criar um gráfico Altair com interatividade
                 chart = alt.Chart(df_filtrado_sensor).mark_line().encode(
                     x='ciclo',
@@ -301,6 +301,7 @@ else:
                     title=f'{nomes_sensores[idx]}',
                     height=180
                 ).interactive()  # Permite zoom e pan
+            
                 # Atualizar o gráfico no espaço reservado correspondente na coluna 2
                 placeholders_col1[idx].altair_chart(chart, use_container_width=True)
                 
