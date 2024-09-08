@@ -226,11 +226,11 @@ else:
                 # Criar um gráfico Altair com interatividade
                 chart = alt.Chart(df_filtrado_sensor).mark_line().encode(
                     x='ciclo',
-                    y=alt.Y('valor', title=f'Valor ({unidades_sensores[idx + 5]})'),  # Ajustar o índice
+                    y=alt.Y('valor', title=f'Valor ({unidades_sensores[idx]})'),  # Ajustar o índice
                     color=alt.Color('id:N', legend=alt.Legend(title="Instância")),
                     tooltip=['id', 'ciclo', 'valor']
                 ).properties(
-                    title=f'{nomes_sensores[idx + 5]}'
+                    title=f'{nomes_sensores[idx]}'
                 ).interactive()  # Permite zoom e pan
 
                 # Atualizar o gráfico no espaço reservado correspondente na coluna 2
