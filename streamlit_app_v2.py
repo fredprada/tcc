@@ -106,40 +106,63 @@ else:
             instancias = X_test_pivoted['instancia']
             ids = X_test_pivoted['id']
             
-            # # Aplicar o scaler separadamente para cada sensor
-            # scalers = {sensor: MinMaxScaler() for sensor in pivot_x_train.columns if sensor not in ['instancia', 'ciclo_ajustado']}
-            # # Aplicar o scaler nos dados de treino
-            # for sensor in scalers:
-            #     if sensor in pivot_x_train.columns:
-            #         pivot_x_train[sensor] = scalers[sensor].fit_transform(pivot_x_train[[sensor]])
+            # Aplicar o scaler separadamente para cada sensor
+            scalers = {sensor: MinMaxScaler() for sensor in pivot_x_train.columns if sensor not in ['instancia', 'ciclo_ajustado']}
+            # Aplicar o scaler nos dados de treino
+            for sensor in scalers:
+                if sensor in pivot_x_train.columns:
+                    pivot_x_train[sensor] = scalers[sensor].fit_transform(pivot_x_train[[sensor]])
             # # Aplicar o scaler nos dados de teste
             # for sensor in scalers:
             #     if sensor in X_test_pivoted.columns:
             #         X_test_pivoted[sensor] = scalers[sensor].transform(X_test_pivoted[[sensor]])
             #     else:
             #         X_test_pivoted[sensor] = 0
+            
             X_test_pivoted = X_test_pivoted.drop(columns=['instancia', 'ciclo_sequencial', 'id'])
+            
             # Aplicar cada modelo e prever o resultado
-            # Aplicar os modelos e prever o resultado
             cooler_predictions = model_xgb_cooler.predict(X_test_pivoted)               
             valve_predictions = model_xgb_valve.predict(X_test_pivoted)
             leakage_predictions = model_xgb_leakage.predict(X_test_pivoted)
             accumulator_predictions = model_xgb_accumulator.predict(X_test_pivoted)
 
-            st.write(cooler_predictions)
-            st.write(valve_predictions)
-            st.write(leakage_predictions)
-            st.write(accumulator_predictions)
+            def load_from_github(file_url):
+                response = requests.get(file_url)
+                response.raise_for_status()  # Garantir que a requisição foi bem-sucedida
+                return joblib.load(BytesIO(response.content))
+                
+            # URLs dos encoders no GitHub
+            encoder_cooler_url = base_url + "encoder_cooler.pkl"
+            encoder_valve_url = base_url + "encoder_valve.pkl"
+            encoder_leakage_url = base_url + "encoder_leakage.pkl"
+            encoder_accumulator_url = base_url + "encoder_accumulator.pkl"
+            
+            # Carregar encoders do GitHub
+            encoder_cooler = load_from_github(encoder_cooler_url)
+            encoder_valve = load_from_github(encoder_valve_url)
+            encoder_leakage = load_from_github(encoder_leakage_url)
+            encoder_accumulator = load_from_github(encoder_accumulator_url)
+            
+            cooler_predictions_original = encoder_cooler.inverse_transform(cooler_predictions)
+            valve_predictions_original = encoder_valve.inverse_transform(valve_predictions)
+            leakage_predictions_original = encoder_leakage.inverse_transform(leakage_predictions)
+            accumulator_predictions_original = encoder_accumulator.inverse_transform(accumulator_predictions)
+            
+            st.write(cooler_predictions_original)
+            st.write(valve_predictions_original)
+            st.write(leakage_predictions_original)
+            st.write(accumulator_predictions_original)
             
             # Adicionar as previsões ao DataFrame filtrado
             X_test_pivoted_with_results = df_sintetico_concatenado_sem_scaler[
                 (df_sintetico_concatenado_sem_scaler['id'].isin(instancias_para_teste)) & 
                 (df_sintetico_concatenado_sem_scaler['ciclo_sequencial'] <= num_ciclos)
             ]
-            X_test_pivoted_with_results['cooler_prediction'] = cooler_predictions
-            X_test_pivoted_with_results['valve_prediction'] = valve_predictions
-            X_test_pivoted_with_results['leakage_prediction'] = leakage_predictions
-            X_test_pivoted_with_results['accumulator_prediction'] = accumulator_predictions
+            X_test_pivoted_with_results['cooler_prediction'] = cooler_predictions_original
+            X_test_pivoted_with_results['valve_prediction'] = valve_predictions_original
+            X_test_pivoted_with_results['leakage_prediction'] = leakage_predictions_original
+            X_test_pivoted_with_results['accumulator_prediction'] = accumulator_predictions_original
             
             # Adicionar a coluna de instância de volta ao DataFrame
             X_test_pivoted_with_results['instancia'] = instancias
