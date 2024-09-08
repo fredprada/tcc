@@ -79,45 +79,32 @@ instancias_para_teste = st.multiselect(
 
 # Tratar a opção "Selecionar Tudo"
 if 'Selecionar Tudo' in instancias_para_teste:
-    instancias_para_teste = lista_instancias
+    instancias_para_teste = list(range(1, 11))
 
 if len(instancias_para_teste) == 0:
     st.write("Selecione pelo menos uma instância para visualizar os dados.")
 else:
-    # Adicionar um slider para selecionar o número de ciclos
     max_ciclo = 60
-    num_ciclos = 0
-
     contador_placeholder = st.empty()
-    
-    # Criar espaços reservados para os gráficos
-    grafico_placeholders = [st.empty() for _ in range(6)]
-    
+
+    # Criar espaços reservados para gráficos
+    cols = st.columns(4)
+    placeholders = [col.empty() for col in cols]
+
     if st.button("Start"):
-        for i in range(61):
-            num_ciclos = i
-            time.sleep(1)
-    
+        for num_ciclos in range(1, max_ciclo + 1):
+            time.sleep(1)  # Simular um delay de 1 segundo para cada ciclo
+
             # Filtrar os dados com base no número de ciclos
             X_test_pivoted_with_results = df_sintetico_concatenado_sem_scaler[
                 (df_sintetico_concatenado_sem_scaler['id'].isin(instancias_para_teste)) & 
                 (df_sintetico_concatenado_sem_scaler['ciclo_sequencial'] <= num_ciclos)
             ]
-            
-            # Lista de sensores
-            lista_sensores = ['ps1', 'ps2', 'ps3', 'ps4', 'ps5', 'ps6', 'eps1', 'fs1', 'fs2', 'ts1', 'ts2', 'ts3', 'ts4', 'vs1', 'ce', 'cp', 'se']
-            nomes_sensores = [
-                'Pressão 1', 'Pressão 2', 'Pressão 3', 'Pressão 4', 'Pressão 5', 'Pressão 6',
-                'Potência do motor', 'Fluxo 1', 'Fluxo 2', 'Temperatura 1', 'Temperatura 2',
-                'Temperatura 3', 'Temperatura 4', 'Vibração 1', 'Eficiência do Resfriador', 
-                'Potência do Resfriador', 'Fator de eficiência'
-            ]
-            unidades_sensores = ['bar', 'bar', 'bar', 'bar', 'bar', 'bar', 'W', 'l/min', 'l/min', '°C', '°C', '°C', '°C', 'mm/s', '%', 'kW', '%']
-        
-            # Atualizar os gráficos dinamicamente
-            for idx, sensor in enumerate(lista_sensores[:6]):  # Exibir apenas 6 gráficos por vez (pode ajustar conforme necessário)
+
+            # Atualizar os gráficos dinamicamente organizando-os 4 por linha
+            for idx, sensor in enumerate(lista_sensores):
                 df_filtrado_sensor = X_test_pivoted_with_results[['ciclo_sequencial', 'id', sensor]].rename(columns={sensor: 'valor', 'ciclo_sequencial': 'ciclo'})
-                
+
                 # Criar um gráfico Altair com interatividade
                 chart = alt.Chart(df_filtrado_sensor).mark_line().encode(
                     x='ciclo',
@@ -127,7 +114,7 @@ else:
                 ).properties(
                     title=f'{nomes_sensores[idx]}'
                 ).interactive()  # Permite zoom e pan
-                
-                # Atualizar o gráfico já existente
-                with grafico_placeholders[idx]:
-                    st.altair_chart(chart, use_container_width=True)
+
+                # Determinar a linha e coluna para o gráfico
+                with cols[idx % 4]:
+                    placeholders[idx % 4].altair_chart(chart, use_container_width=True)
