@@ -88,8 +88,13 @@ else:
     
     # Criar espaço reservado para a tabela
     tabela_placeholder = st.empty()
+
+    # Criar duas colunas para os gráficos de status
+    col_status1, col_status2 = st.columns(2)
     
-    status_placeholders = [st.empty() for _ in range(4)]
+    # Criar espaços reservados para os gráficos de status nas duas colunas
+    status_placeholders_col1 = [col_status1.empty() for _ in range(2)]  # Para Status Cooler e Válvula
+    status_placeholders_col2 = [col_status2.empty() for _ in range(2)]  # Para Status Vazamento e Acumulador
     
     # Criar quatro colunas para os gráficos
     col1, col2, col3, col4 = st.columns(4)
@@ -277,17 +282,18 @@ else:
                 )
                 return chart
 
-            # Exibir gráficos de status timeline logo abaixo da tabela
+            # Exibir gráficos de status timeline em duas colunas
             cooler_chart = plot_status_timeline(X_test_pivoted_with_results, 'cooler_prediction', 'Status Cooler', color_scale_cooler)
             valve_chart = plot_status_timeline(X_test_pivoted_with_results, 'valve_prediction', 'Status Válvula', color_scale_valve)
             leakage_chart = plot_status_timeline(X_test_pivoted_with_results, 'leakage_prediction', 'Status Vazamento', color_scale_leakage)
             accumulator_chart = plot_status_timeline(X_test_pivoted_with_results, 'accumulator_prediction', 'Status Acumulador', color_scale_accumulator)
-            
-            # Limpar e atualizar os placeholders com os gráficos de status
-            status_placeholders[0].altair_chart(cooler_chart, use_container_width=True)
-            status_placeholders[1].altair_chart(valve_chart, use_container_width=True)
-            status_placeholders[2].altair_chart(leakage_chart, use_container_width=True)
-            status_placeholders[3].altair_chart(accumulator_chart, use_container_width=True)
+    
+            # Atualizar os placeholders com os gráficos de status
+            status_placeholders_col1[0].altair_chart(cooler_chart, use_container_width=True)
+            status_placeholders_col1[1].altair_chart(valve_chart, use_container_width=True)
+            status_placeholders_col2[0].altair_chart(leakage_chart, use_container_width=True)
+            status_placeholders_col2[1].altair_chart(accumulator_chart, use_container_width=True)
+
 
             # Agora os gráficos dos sensores serão exibidos depois dos gráficos de status
             for idx, sensor in enumerate(lista_sensores[0:4]):  # Sensores 0 a 4
