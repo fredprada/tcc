@@ -97,8 +97,12 @@ else:
     max_ciclo = 60
     contador_placeholder = st.empty()
 
-    # Criar espaços reservados para todos os gráficos (4 colunas x 5 linhas, total de 17 espaços)
-    placeholders = [st.empty() for _ in range(len(lista_sensores))]
+    # Criar duas colunas para os gráficos
+    col1, col2 = st.columns(2)
+
+    # Criar espaços reservados para os gráficos em duas colunas
+    placeholders_col1 = [col1.empty() for _ in range(8)]  # Gráficos 1 a 8
+    placeholders_col2 = [col2.empty() for _ in range(9)]  # Gráficos 9 a 17
 
     if st.button("Start"):
         for num_ciclos in range(1, max_ciclo + 1):
@@ -110,8 +114,8 @@ else:
                 (df_sintetico_concatenado_sem_scaler['ciclo_sequencial'] <= num_ciclos)
             ]
 
-            # Atualizar os gráficos dinamicamente nos espaços reservados
-            for idx, sensor in enumerate(lista_sensores):
+            # Atualizar os gráficos na coluna 1 (gráficos 1 a 8)
+            for idx, sensor in enumerate(lista_sensores[:8]):  # Sensores 1 a 8
                 df_filtrado_sensor = X_test_pivoted_with_results[['ciclo_sequencial', 'id', sensor]].rename(columns={sensor: 'valor', 'ciclo_sequencial': 'ciclo'})
 
                 # Criar um gráfico Altair com interatividade
@@ -124,5 +128,22 @@ else:
                     title=f'{nomes_sensores[idx]}'
                 ).interactive()  # Permite zoom e pan
 
-                # Atualizar o gráfico no espaço reservado correspondente
-                placeholders[idx].altair_chart(chart, use_container_width=True)
+                # Atualizar o gráfico no espaço reservado correspondente na coluna 1
+                placeholders_col1[idx].altair_chart(chart, use_container_width=True)
+
+            # Atualizar os gráficos na coluna 2 (gráficos 9 a 17)
+            for idx, sensor in enumerate(lista_sensores[8:]):  # Sensores 9 a 17
+                df_filtrado_sensor = X_test_pivoted_with_results[['ciclo_sequencial', 'id', sensor]].rename(columns={sensor: 'valor', 'ciclo_sequencial': 'ciclo'})
+
+                # Criar um gráfico Altair com interatividade
+                chart = alt.Chart(df_filtrado_sensor).mark_line().encode(
+                    x='ciclo',
+                    y=alt.Y('valor', title=f'Valor ({unidades_sensores[idx + 8]})'),  # Ajustar o índice
+                    color=alt.Color('id:N', legend=alt.Legend(title="Instância")),
+                    tooltip=['id', 'ciclo', 'valor']
+                ).properties(
+                    title=f'{nomes_sensores[idx + 8]}'
+                ).interactive()  # Permite zoom e pan
+
+                # Atualizar o gráfico no espaço reservado correspondente na coluna 2
+                placeholders_col2[idx].altair_chart(chart, use_container_width=True)
