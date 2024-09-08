@@ -64,6 +64,16 @@ df_tratado = load_csv_from_github(df_tratado_pd_not_optimal_30_rand_instances_ur
 df_sintetico_concatenado = load_csv_from_github(df_sintetico_concatenado_url, GITHUB_TOKEN)
 df_sintetico_concatenado_sem_scaler = load_csv_from_github(df_sintetico_concatenado_sem_scaler_url, GITHUB_TOKEN)
 
+# Lista de sensores
+lista_sensores = ['ps1', 'ps2', 'ps3', 'ps4', 'ps5', 'ps6', 'eps1', 'fs1', 'fs2', 'ts1', 'ts2', 'ts3', 'ts4', 'vs1', 'ce', 'cp', 'se']
+nomes_sensores = [
+    'Pressão 1', 'Pressão 2', 'Pressão 3', 'Pressão 4', 'Pressão 5', 'Pressão 6',
+    'Potência do motor', 'Fluxo 1', 'Fluxo 2', 'Temperatura 1', 'Temperatura 2',
+    'Temperatura 3', 'Temperatura 4', 'Vibração 1', 'Eficiência do Resfriador', 
+    'Potência do Resfriador', 'Fator de eficiência'
+]
+unidades_sensores = ['bar', 'bar', 'bar', 'bar', 'bar', 'bar', 'W', 'l/min', 'l/min', '°C', '°C', '°C', '°C', 'mm/s', '%', 'kW', '%']
+
 # Interface do Streamlit
 st.title('Predição de Falhas')
 
