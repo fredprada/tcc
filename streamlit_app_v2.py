@@ -106,12 +106,12 @@ else:
             instancias = X_test_pivoted['instancia']
             ids = X_test_pivoted['id']
             
-            # Aplicar o scaler separadamente para cada sensor
-            scalers = {sensor: MinMaxScaler() for sensor in pivot_x_train.columns if sensor not in ['instancia', 'ciclo_ajustado']}
-            # Aplicar o scaler nos dados de treino
-            for sensor in scalers:
-                if sensor in pivot_x_train.columns:
-                    pivot_x_train[sensor] = scalers[sensor].fit_transform(pivot_x_train[[sensor]])
+            # # Aplicar o scaler separadamente para cada sensor
+            # scalers = {sensor: MinMaxScaler() for sensor in pivot_x_train.columns if sensor not in ['instancia', 'ciclo_ajustado']}
+            # # Aplicar o scaler nos dados de treino
+            # for sensor in scalers:
+            #     if sensor in pivot_x_train.columns:
+            #         pivot_x_train[sensor] = scalers[sensor].fit_transform(pivot_x_train[[sensor]])
             # # Aplicar o scaler nos dados de teste
             # for sensor in scalers:
             #     if sensor in X_test_pivoted.columns:
