@@ -95,6 +95,9 @@ else:
     placeholders_col2 = [col2.empty() for _ in range(4)]  # Gráficos 6 a 9
     placeholders_col3 = [col3.empty() for _ in range(4)]  # Gráficos 10 a 13
     placeholders_col4 = [col4.empty() for _ in range(4)]  # Gráficos 14 a 17
+
+    status_placeholders = [st.empty() for _ in range(4)]
+    
     if st.button("Start"):
         for num_ciclos in range(1, max_ciclo + 1):
             time.sleep(0.1)  
@@ -272,17 +275,17 @@ else:
                 )
                 return chart
 
-            # Criar gráficos de status timeline
+            # Limpar e atualizar os placeholders com os gráficos de status
             cooler_chart = plot_status_timeline(X_test_pivoted_with_results, 'cooler_prediction', 'Status Cooler', color_scale_cooler)
             valve_chart = plot_status_timeline(X_test_pivoted_with_results, 'valve_prediction', 'Status Válvula', color_scale_valve)
             leakage_chart = plot_status_timeline(X_test_pivoted_with_results, 'leakage_prediction', 'Status Vazamento', color_scale_leakage)
             accumulator_chart = plot_status_timeline(X_test_pivoted_with_results, 'accumulator_prediction', 'Status Acumulador', color_scale_accumulator)
-
-            # Exibir os gráficos logo abaixo da tabela
-            st.altair_chart(cooler_chart, use_container_width=True)
-            st.altair_chart(valve_chart, use_container_width=True)
-            st.altair_chart(leakage_chart, use_container_width=True)
-            st.altair_chart(accumulator_chart, use_container_width=True)
+    
+            # Atualizar os placeholders com os gráficos
+            status_placeholders[0].altair_chart(cooler_chart, use_container_width=True)
+            status_placeholders[1].altair_chart(valve_chart, use_container_width=True)
+            status_placeholders[2].altair_chart(leakage_chart, use_container_width=True)
+            status_placeholders[3].altair_chart(accumulator_chart, use_container_width=True)
 
             # Atualizar os gráficos na coluna 0 (gráficos 0 a 4)
             for idx, sensor in enumerate(lista_sensores[0:4]):  # Sensores 0 a 4
