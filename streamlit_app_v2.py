@@ -262,7 +262,7 @@ else:
                     tooltip=['id', 'ciclo', 'valor']
                 ).properties(
                     title=f'{nomes_sensores[idx]}',
-                    height=150
+                    height=180
                 ).interactive()  # Permite zoom e pan
                 # Atualizar o gráfico no espaço reservado correspondente na coluna 2
                 placeholders_col1[idx].altair_chart(chart, use_container_width=True)
@@ -278,7 +278,7 @@ else:
                     tooltip=['id', 'ciclo', 'valor']
                 ).properties(
                     title=f'{nomes_sensores[idx + 5]}',
-                    height=150
+                    height=180
                 ).interactive()  # Permite zoom e pan
                 # Atualizar o gráfico no espaço reservado correspondente na coluna 2
                 placeholders_col2[idx].altair_chart(chart, use_container_width=True)
@@ -294,7 +294,7 @@ else:
                     tooltip=['id', 'ciclo', 'valor']
                 ).properties(
                     title=f'{nomes_sensores[idx + 9]}',
-                    height=150
+                    height=180
                 ).interactive()  # Permite zoom e pan
                 # Atualizar o gráfico no espaço reservado correspondente na coluna 3
                 placeholders_col3[idx].altair_chart(chart, use_container_width=True)
@@ -310,7 +310,7 @@ else:
                     tooltip=['id', 'ciclo', 'valor']
                 ).properties(
                     title=f'{nomes_sensores[idx + 13]}',
-                    height=150
+                    height=180
                 ).interactive()  # Permite zoom e pan
                 # Atualizar o gráfico no espaço reservado correspondente na coluna 4
                 placeholders_col4[idx].altair_chart(chart, use_container_width=True)
