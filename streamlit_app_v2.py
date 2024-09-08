@@ -268,17 +268,17 @@ else:
                 ).properties(
                     title=title,
                     width=800,
-                    height=100  # Diminuir a altura
+                    height=150
                 )
                 return chart
 
-            # Criar gráficos de status timeline para cada previsão
+            # Criar gráficos de status timeline
             cooler_chart = plot_status_timeline(X_test_pivoted_with_results, 'cooler_prediction', 'Status Cooler', color_scale_cooler)
             valve_chart = plot_status_timeline(X_test_pivoted_with_results, 'valve_prediction', 'Status Válvula', color_scale_valve)
             leakage_chart = plot_status_timeline(X_test_pivoted_with_results, 'leakage_prediction', 'Status Vazamento', color_scale_leakage)
             accumulator_chart = plot_status_timeline(X_test_pivoted_with_results, 'accumulator_prediction', 'Status Acumulador', color_scale_accumulator)
 
-            # Exibir os gráficos no Streamlit logo após a tabela
+            # Exibir os gráficos logo abaixo da tabela
             st.altair_chart(cooler_chart, use_container_width=True)
             st.altair_chart(valve_chart, use_container_width=True)
             st.altair_chart(leakage_chart, use_container_width=True)
