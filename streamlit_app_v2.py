@@ -97,8 +97,10 @@ else:
     max_ciclo = 60
     contador_placeholder = st.empty()
 
-    # Criar espaços reservados para gráficos, 4 por linha e 5 linhas no total (total de 17 gráficos)
-    placeholders = [st.empty() for _ in range(len(lista_sensores))]
+    # Criar espaços reservados para gráficos
+    cols = st.columns(4)
+    placeholders = [col.empty() for col in cols]
+    # placeholders = [st.empty() for _ in range(len(lista_sensores))]
 
     if st.button("Start"):
         for num_ciclos in range(1, max_ciclo + 1):
