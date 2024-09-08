@@ -267,7 +267,7 @@ else:
             def plot_status_timeline(df, sensor_col, title, color_scale):
                 chart = alt.Chart(df).mark_rect().encode(
                     x=alt.X('ciclo_sequencial:O', title='Ciclo'),
-                    y=alt.Y('id:N'), title='',
+                    y=alt.Y('id:N', title=''),
                     color=alt.Color(f'{sensor_col}:O', scale=color_scale, legend=alt.Legend(title="Status")),
                     tooltip=['id', 'ciclo_sequencial', sensor_col]
                 ).properties(
