@@ -90,9 +90,6 @@ else:
 
     contador_placeholder = st.empty()
     
-    # Criar espaços reservados para os gráficos
-    grafico_placeholders = [st.empty() for _ in range(6)]
-    
     if st.button("Start"):
         for i in range(61):
             num_ciclos = i
@@ -114,8 +111,9 @@ else:
             ]
             unidades_sensores = ['bar', 'bar', 'bar', 'bar', 'bar', 'bar', 'W', 'l/min', 'l/min', '°C', '°C', '°C', '°C', 'mm/s', '%', 'kW', '%']
         
-            # Atualizar os gráficos dinamicamente
-            for idx, sensor in enumerate(lista_sensores[:6]):  # Exibir apenas 6 gráficos por vez (pode ajustar conforme necessário)
+            # Exibir 4 gráficos por linha
+            for idx, sensor in enumerate(lista_sensores):
+                # Filtrar os dados para cada sensor
                 df_filtrado_sensor = X_test_pivoted_with_results[['ciclo_sequencial', 'id', sensor]].rename(columns={sensor: 'valor', 'ciclo_sequencial': 'ciclo'})
                 
                 # Criar um gráfico Altair com interatividade
@@ -128,6 +126,10 @@ else:
                     title=f'{nomes_sensores[idx]}'
                 ).interactive()  # Permite zoom e pan
                 
-                # Atualizar o gráfico já existente
-                with grafico_placeholders[idx]:
+                # Organizar 4 gráficos por linha
+                if idx % 4 == 0:
+                    cols = st.columns(4)  # Criar uma nova linha de 4 colunas
+                
+                # Exibir o gráfico na coluna correta
+                with cols[idx % 4]:
                     st.altair_chart(chart, use_container_width=True)
