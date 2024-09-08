@@ -93,8 +93,15 @@ if len(instancias_para_teste) == 0:
 else:
     # Adicionar um slider para selecionar o número de ciclos
     max_ciclo = 60
-    num_ciclos = st.slider("Selecione o número máximo de ciclos", 0, max_ciclo, max_ciclo)
+    # num_ciclos = st.slider("Selecione o número máximo de ciclos", 0, max_ciclo, max_ciclo)
+    num_ciclos = 0
 
+    contador_placeholder = st.empty()
+    if st.button("Start"):
+        for i in range(61):
+            num_ciclos = i 
+            time.sleep(1)
+    
     # Lista de sensores
     lista_sensores = ['ps1', 'ps2', 'ps3', 'ps4', 'ps5', 'ps6', 'eps1', 'fs1', 'fs2', 'ts1', 'ts2', 'ts3', 'ts4', 'vs1', 'ce', 'cp', 'se']
 
