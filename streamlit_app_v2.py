@@ -238,16 +238,6 @@ else:
 
             # Atualizar os gráficos na coluna 2 (gráficos 6 a 9)
             for idx, sensor in enumerate(lista_sensores[5:9]):  # Sensores 6 a 9
-
-    
-          
-            
-    
-
-          
-          Expand Down
-    
-    
   
                 df_filtrado_sensor = X_test_pivoted_with_results[['ciclo_sequencial', 'id', sensor]].rename(columns={sensor: 'valor', 'ciclo_sequencial': 'ciclo'})
                 # Criar um gráfico Altair com interatividade
