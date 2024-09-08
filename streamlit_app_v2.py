@@ -97,7 +97,7 @@ else:
     placeholders_col4 = [col4.empty() for _ in range(4)]  # Gráficos 14 a 17
     if st.button("Start"):
         for num_ciclos in range(1, max_ciclo + 1):
-            time.sleep(0.2)  
+            time.sleep(0.1)  
             
             # Pivotar os dados para preparar para o modelo
             pivot_x_train = df_tratado.pivot(index=['instancia', 'ciclo_ajustado'], columns='sensor', values='valor').reset_index()
@@ -151,7 +151,7 @@ else:
             accumulator_predictions_original = encoder_accumulator.inverse_transform(accumulator_predictions)
 
             # para troubleshooting:
-            # st.write(cooler_predictions_original)
+            st.write(cooler_predictions_original)
             # st.write(valve_predictions_original)
             # st.write(leakage_predictions_original)
             # st.write(accumulator_predictions_original)
