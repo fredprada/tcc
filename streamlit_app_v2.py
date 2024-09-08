@@ -90,11 +90,13 @@ else:
     tabela_placeholder = st.empty()
 
     # Criar duas colunas para os gráficos de status
-    col_status1, col_status2 = st.columns(2)
+    col_status1, col_status2, col_status3, col_status4 = st.columns(4)
     
     # Criar espaços reservados para os gráficos de status nas duas colunas
-    status_placeholders_col1 = [col_status1.empty() for _ in range(2)]  # Para Status Cooler e Válvula
-    status_placeholders_col2 = [col_status2.empty() for _ in range(2)]  # Para Status Vazamento e Acumulador
+    status_placeholders_col1 = [col_status1.empty() for _ in range(1)]  
+    status_placeholders_col2 = [col_status2.empty() for _ in range(1)]  
+    status_placeholders_col3 = [col_status3.empty() for _ in range(1)]  
+    status_placeholders_col4 = [col_status4.empty() for _ in range(1)]  
     
     # Criar quatro colunas para os gráficos
     col1, col2, col3, col4 = st.columns(4)
@@ -289,10 +291,10 @@ else:
             accumulator_chart = plot_status_timeline(X_test_pivoted_with_results, 'accumulator_prediction', 'Status Acumulador', color_scale_accumulator)
     
             # Atualizar os placeholders com os gráficos de status
-            status_placeholders_col1[0].altair_chart(cooler_chart, use_container_width=True)
-            status_placeholders_col1[1].altair_chart(valve_chart, use_container_width=True)
-            status_placeholders_col2[0].altair_chart(leakage_chart, use_container_width=True)
-            status_placeholders_col2[1].altair_chart(accumulator_chart, use_container_width=True)
+            status_placeholders_col1.altair_chart(cooler_chart, use_container_width=True)
+            status_placeholders_col2.altair_chart(valve_chart, use_container_width=True)
+            status_placeholders_col3.altair_chart(leakage_chart, use_container_width=True)
+            status_placeholders_col4.altair_chart(accumulator_chart, use_container_width=True)
 
 
             # Agora os gráficos dos sensores serão exibidos depois dos gráficos de status
