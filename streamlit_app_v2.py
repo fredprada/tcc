@@ -97,14 +97,17 @@ else:
     max_ciclo = 60
     contador_placeholder = st.empty()
 
-        # Pivotar os dados para preparar para o modelo
+    # Inicialize `num_ciclos` antes do uso
+    num_ciclos = 1  # Começa com o ciclo inicial, pode ser ajustado conforme necessário
+
+    # Pivotar os dados para preparar para o modelo
     pivot_x_train = df_tratado.pivot(index=['instancia', 'ciclo_ajustado'], columns='sensor', values='valor').reset_index()
-    # X_test_pivoted = df_filtrado.pivot(index=['instancia', 'ciclo_ajustado'], columns='sensor', values='valor').reset_index()
     X_test_pivoted = df_sintetico_concatenado.copy()
     X_test_pivoted = X_test_pivoted[(X_test_pivoted['id'].isin(instancias_para_teste)) & (X_test_pivoted['ciclo_sequencial'] <= num_ciclos)]
     # Salvar a coluna de instância antes de removê-la
     instancias = X_test_pivoted['instancia']
     ids = X_test_pivoted['id']
+    
     # Aplicar o scaler separadamente para cada sensor
     scalers = {sensor: MinMaxScaler() for sensor in pivot_x_train.columns if sensor not in ['instancia', 'ciclo_ajustado']}
     # Aplicar o scaler nos dados de treino
