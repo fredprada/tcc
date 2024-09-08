@@ -236,9 +236,9 @@ else:
     # Criar um DataFrame com os resultados
     resultados_df = pd.DataFrame({
         'Instância': instancia_list,
-        'Cooler': cooler_status_list,
+        'Resfriador': cooler_status_list,
         'Válvula': valve_status_list,
-        'Vazamento': leakage_status_list,
+        'Motor': leakage_status_list,
         'Acumulador': accumulator_status_list
     })
 
@@ -264,17 +264,58 @@ else:
     num_sensores = len(lista_sensores)
     cols = st.columns(6)
 
+    # nomes_sensores = ['ps1', 'ps2', 'ps3', 'ps4', 'ps5', 'ps6', 'eps1', 'fs1', 'fs2', 'ts1', 'ts2', 'ts3', 'ts4', 'vs1', 'ce', 'cp', 'se']
+    nomes_sensores = [
+        'Pressão 1', #ps1
+        'Pressão 2', #ps2
+        'Pressão 3', #ps3
+        'Pressão 4', #ps4
+        'Pressão 5', #ps5
+        'Pressão 6', #ps6
+        'Potência do motor', #eps1
+        'Fluxo 1', #fs1
+        'Fluxo 2', #fs2
+        'Temperatura 1', #ts1
+        'Temperatura 2', #ts2
+        'Temperatura 3', #ts3
+        'Temperatura 4', #ts4
+        'Vibração 1', #vs1
+        'Eficiência do Resfriador', #ce
+        'Potência do Resfriador', #cp
+        'Fator de eficiência' #se
+        ]
+
+    unidades_sensores = [
+        'bar',   # ps1
+        'bar',   # ps2
+        'bar',   # ps3
+        'bar',   # ps4
+        'bar',   # ps5
+        'bar',   # ps6
+        'W',     # eps1
+        'l/min', # fs1
+        'l/min', # fs2
+        '°C',    # ts1
+        '°C',    # ts2
+        '°C',    # ts3
+        '°C',    # ts4
+        'mm/s',  # vs1
+        '%',     # ce
+        'kW',    # cp
+        '%'      # se
+    ]
+
     for i, sensor in enumerate(lista_sensores):
         df_filtrado_sensor = X_test_pivoted_with_results[['ciclo_sequencial', 'id', sensor]].rename(columns={sensor: 'valor', 'ciclo_sequencial': 'ciclo'})
         
         # Criar um gráfico Altair com interatividade
         chart = alt.Chart(df_filtrado_sensor).mark_line().encode(
             x='ciclo',
-            y='valor',
+            y=alt.Y('valor', title=f'Valor ({unidades_sensores[i]})'),
             color=alt.Color('id:N', legend=alt.Legend(title="Instância")),
             tooltip=['id', 'ciclo', 'valor']
         ).properties(
-            title=f'Sensor: {sensor}'
+            title=f'{nomes_sensores[i]}'
         ).add_selection(
             selection
         ).transform_filter(
