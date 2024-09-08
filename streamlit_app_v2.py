@@ -97,6 +97,9 @@ else:
     max_ciclo = 60
     contador_placeholder = st.empty()
 
+    # Criar espaços reservados para gráficos, 4 por linha e 5 linhas no total (total de 17 gráficos)
+    placeholders = [st.empty() for _ in range(len(lista_sensores))]
+
     if st.button("Start"):
         for num_ciclos in range(1, max_ciclo + 1):
             time.sleep(1)  # Simular um delay de 1 segundo para cada ciclo
@@ -107,7 +110,7 @@ else:
                 (df_sintetico_concatenado_sem_scaler['ciclo_sequencial'] <= num_ciclos)
             ]
 
-            # Atualizar os gráficos dinamicamente organizando-os 4 por linha e 5 linhas
+            # Atualizar os gráficos dinamicamente nos espaços reservados
             for idx, sensor in enumerate(lista_sensores):
                 df_filtrado_sensor = X_test_pivoted_with_results[['ciclo_sequencial', 'id', sensor]].rename(columns={sensor: 'valor', 'ciclo_sequencial': 'ciclo'})
 
@@ -121,9 +124,5 @@ else:
                     title=f'{nomes_sensores[idx]}'
                 ).interactive()  # Permite zoom e pan
 
-                # Organizar em linhas de 4 gráficos
-                if idx % 4 == 0:
-                    cols = st.columns(4)  # Criar uma nova linha de 4 colunas
-
-                # Exibir o gráfico na coluna correta
-                cols[idx % 4].altair_chart(chart, use_container_width=True)
+                # Atualizar o gráfico no espaço reservado correspondente
+                placeholders[idx].altair_chart(chart, use_container_width=True)
