@@ -12,10 +12,8 @@ import seaborn as sns
 from tslearn.metrics import dtw
 from sklearn.cluster import DBSCAN
 import joblib
-
 # Configurar o layout para "wide"
 st.set_page_config(layout="wide")
-
 # Função para carregar um objeto em pickle do GitHub
 def load_object_from_github(file_url, github_token):
     headers = {
@@ -25,7 +23,6 @@ def load_object_from_github(file_url, github_token):
     response = requests.get(file_url)#, headers=headers)
     response.raise_for_status()  # Verifica se a requisição foi bem-sucedida
     return pickle.loads(response.content)
-
 # Função para carregar um arquivo CSV do GitHub
 def load_csv_from_github(file_url, github_token):
     headers = {
@@ -35,7 +32,6 @@ def load_csv_from_github(file_url, github_token):
     response = requests.get(file_url)#, headers=headers)
     response.raise_for_status()  # Verifica se a requisição foi bem-sucedida
     return pd.read_csv(StringIO(response.text))
-
 # URL dos arquivos no GitHub
 base_url = "https://raw.githubusercontent.com/fredprada/tcc/main/"
 model_xgb_cooler_url = base_url + "model_xgb_cooler.pkl"
@@ -47,23 +43,19 @@ test_data_url = base_url + "x_test_final.csv"
 df_tratado_pd_not_optimal_30_rand_instances_url = base_url + "df_tratado_pd_not_optimal_30_rand_instances.csv"
 df_sintetico_concatenado_url = base_url + "df_sintetico_concatenado.csv"
 df_sintetico_concatenado_sem_scaler_url = base_url + "df_sintetico_concatenado_sem_scaler.csv"
-
 # Token de acesso ao GitHub
 GITHUB_TOKEN = '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'
-
 # Carregar os modelos e o scaler
 model_xgb_cooler = load_object_from_github(model_xgb_cooler_url, GITHUB_TOKEN)
 model_xgb_valve = load_object_from_github(model_xgb_valve_url, GITHUB_TOKEN)
 model_xgb_leakage = load_object_from_github(model_xgb_leakage_url, GITHUB_TOKEN)
 model_xgb_accumulator = load_object_from_github(model_xgb_accumulator_url, GITHUB_TOKEN)
 scaler = load_object_from_github(scaler_url, GITHUB_TOKEN)
-
 # Carregar os dados de teste
 test_data = load_csv_from_github(test_data_url, GITHUB_TOKEN)
 df_tratado = load_csv_from_github(df_tratado_pd_not_optimal_30_rand_instances_url, GITHUB_TOKEN)
 df_sintetico_concatenado = load_csv_from_github(df_sintetico_concatenado_url, GITHUB_TOKEN)
 df_sintetico_concatenado_sem_scaler = load_csv_from_github(df_sintetico_concatenado_sem_scaler_url, GITHUB_TOKEN)
-
 # Lista de sensores
 lista_sensores = ['ps1', 'ps2', 'ps3', 'ps4', 'ps5', 'ps6', 'eps1', 'fs1', 'fs2', 'ts1', 'ts2', 'ts3', 'ts4', 'vs1', 'ce', 'cp', 'se']
 nomes_sensores = [
@@ -73,49 +65,39 @@ nomes_sensores = [
     'Potência do Resfriador', 'Fator de eficiência'
 ]
 unidades_sensores = ['bar', 'bar', 'bar', 'bar', 'bar', 'bar', 'W', 'l/min', 'l/min', '°C', '°C', '°C', '°C', 'mm/s', '%', 'kW', '%']
-
 # Interface do Streamlit
 st.title('Predição de Falhas')
-
 # Lista de instâncias
 lista_instancias = list(range(1, 41))
-
 # Selecionar instâncias para teste
 instancias_para_teste = st.multiselect(
     "Qual instância deseja ver?", 
     options=['Selecionar Tudo'] + lista_instancias, 
     default=[1]
 )
-
 # Tratar a opção "Selecionar Tudo"
 if 'Selecionar Tudo' in instancias_para_teste:
     instancias_para_teste = list(range(1, 11))
-
 if len(instancias_para_teste) == 0:
     st.write("Selecione pelo menos uma instância para visualizar os dados.")
 else:
     max_ciclo = 60
     contador_placeholder = st.empty()
-
     # Inicialize `num_ciclos` antes do uso
     num_ciclos = 1  # Começa com o ciclo inicial, pode ser ajustado conforme necessário
     
     # Criar espaço reservado para a tabela
     tabela_placeholder = st.empty()
-
     # Criar quatro colunas para os gráficos
     col1, col2, col3, col4 = st.columns(4)
-
     # Criar espaços reservados para os gráficos em quatro colunas
     placeholders_col1 = [col1.empty() for _ in range(5)]  # Gráficos 1 a 5
     placeholders_col2 = [col2.empty() for _ in range(4)]  # Gráficos 6 a 9
     placeholders_col3 = [col3.empty() for _ in range(4)]  # Gráficos 10 a 13
     placeholders_col4 = [col4.empty() for _ in range(4)]  # Gráficos 14 a 17
-
     if st.button("Start"):
         for num_ciclos in range(1, max_ciclo + 1):
             time.sleep(1)  # Simular um delay de 1 segundo para cada ciclo
-
             # Pivotar os dados para preparar para o modelo
             pivot_x_train = df_tratado.pivot(index=['instancia', 'ciclo_ajustado'], columns='sensor', values='valor').reset_index()
             X_test_pivoted = df_sintetico_concatenado.copy()
@@ -126,16 +108,23 @@ else:
             
             # Aplicar o scaler separadamente para cada sensor
             scalers = {sensor: MinMaxScaler() for sensor in pivot_x_train.columns if sensor not in ['instancia', 'ciclo_ajustado']}
+            # Aplicar o scaler nos dados de treino
             for sensor in scalers:
                 if sensor in pivot_x_train.columns:
                     pivot_x_train[sensor] = scalers[sensor].fit_transform(pivot_x_train[[sensor]])
-
+            # # Aplicar o scaler nos dados de teste
+            # for sensor in scalers:
+            #     if sensor in X_test_pivoted.columns:
+            #         X_test_pivoted[sensor] = scalers[sensor].transform(X_test_pivoted[[sensor]])
+            #     else:
+            #         X_test_pivoted[sensor] = 0
+            X_test_pivoted = X_test_pivoted.drop(columns=['instancia', 'ciclo_sequencial', 'id'])
             # Aplicar cada modelo e prever o resultado
+            # Aplicar os modelos e prever o resultado
             cooler_predictions = model_xgb_cooler.predict(X_test_pivoted)
             valve_predictions = model_xgb_valve.predict(X_test_pivoted)
             leakage_predictions = model_xgb_leakage.predict(X_test_pivoted)
             accumulator_predictions = model_xgb_accumulator.predict(X_test_pivoted)
-
             # Adicionar as previsões ao DataFrame filtrado
             X_test_pivoted_with_results = df_sintetico_concatenado_sem_scaler[
                 (df_sintetico_concatenado_sem_scaler['id'].isin(instancias_para_teste)) & 
@@ -149,17 +138,14 @@ else:
             # Adicionar a coluna de instância de volta ao DataFrame
             X_test_pivoted_with_results['instancia'] = instancias
             X_test_pivoted_with_results['id'] = ids
-
             # Filtrar os resultados do ciclo selecionado
             resultados_ciclos = X_test_pivoted_with_results[X_test_pivoted_with_results['ciclo_sequencial'] == num_ciclos]
-
             # Atualizar a tabela de status a cada ciclo
             instancia_list = []
             cooler_status_list = []
             valve_status_list = []
             leakage_status_list = []
             accumulator_status_list = []
-
             # Função para converter predições em mensagens
             def get_status_message(prediction, sensor_type):
                 if sensor_type == 'cooler':
@@ -196,7 +182,6 @@ else:
                         return "🟠 Pressão severamente reduzida"
                     elif prediction == 90:
                         return "🔴 Próximo da falha total"
-
             # Exibir os resultados para cada instância
             for instancia in instancias_para_teste:
                 resultado_instancia = resultados_ciclos[resultados_ciclos['id'] == instancia]
@@ -212,7 +197,6 @@ else:
                     valve_status_list.append(get_status_message(resultado_valve, 'valve'))
                     leakage_status_list.append(get_status_message(resultado_leakage, 'leakage'))
                     accumulator_status_list.append(get_status_message(resultado_accumulator, 'accumulator'))
-
             # Criar um DataFrame com os resultados
             resultados_df = pd.DataFrame({
                 'Instância': instancia_list,
@@ -235,25 +219,8 @@ else:
                 'props': [('text-align', 'left')]
             }]))
 
-            # Atualizar os gráficos na coluna 1 (gráficos 1 a 5)
-            for idx, sensor in enumerate(lista_sensores[:5]):  # Sensores 1 a 5
-                df_filtrado_sensor = X_test_pivoted_with_results[['ciclo_sequencial', 'id', sensor]].rename(columns={sensor: 'valor', 'ciclo_sequencial': 'ciclo'})
-
-                # Criar um gráfico Altair com interatividade
-                chart = alt.Chart(df_filtrado_sensor).mark_line().encode(
-                    x='ciclo',
-                    y=alt.Y('valor', title=f'Valor ({unidades_sensores[idx]})'),
-                    color=alt.Color('id:N', legend=alt.Legend(title="Instância")),
-                    tooltip=['id', 'ciclo', 'valor']
-                ).properties(
-                    title=f'{nomes_sensores[idx]}'
-                ).interactive()  # Permite zoom e pan
-
-                # Atualizar o gráfico no espaço reservado correspondente na coluna 1
-                placeholders_col1[idx].altair_chart(chart, use_container_width=True)
-
-            # Atualizar os gráficos na coluna 2 (gráficos 6 a 9)
-            for idx, sensor in enumerate(lista_sensores[5:9]):  # Sensores 6 a 9
+            # Atualizar os gráficos na coluna 1 (gráficos 1 a 4)
+            for idx, sensor in enumerate(lista_sensores[1:4]):  # Sensores 1 a 4
                 df_filtrado_sensor = X_test_pivoted_with_results[['ciclo_sequencial', 'id', sensor]].rename(columns={sensor: 'valor', 'ciclo_sequencial': 'ciclo'})
 
                 # Criar um gráfico Altair com interatividade
@@ -269,10 +236,34 @@ else:
                 # Atualizar o gráfico no espaço reservado correspondente na coluna 2
                 placeholders_col2[idx].altair_chart(chart, use_container_width=True)
 
+            # Atualizar os gráficos na coluna 2 (gráficos 6 a 9)
+            for idx, sensor in enumerate(lista_sensores[5:9]):  # Sensores 6 a 9
+
+    
+          
+            
+    
+
+          
+          Expand Down
+    
+    
+  
+                df_filtrado_sensor = X_test_pivoted_with_results[['ciclo_sequencial', 'id', sensor]].rename(columns={sensor: 'valor', 'ciclo_sequencial': 'ciclo'})
+                # Criar um gráfico Altair com interatividade
+                chart = alt.Chart(df_filtrado_sensor).mark_line().encode(
+                    x='ciclo',
+                    y=alt.Y('valor', title=f'Valor ({unidades_sensores[idx + 5]})'),  # Ajustar o índice
+                    color=alt.Color('id:N', legend=alt.Legend(title="Instância")),
+                    tooltip=['id', 'ciclo', 'valor']
+                ).properties(
+                    title=f'{nomes_sensores[idx + 5]}'
+                ).interactive()  # Permite zoom e pan
+                # Atualizar o gráfico no espaço reservado correspondente na coluna 2
+                placeholders_col2[idx].altair_chart(chart, use_container_width=True)
             # Atualizar os gráficos na coluna 3 (gráficos 10 a 13)
             for idx, sensor in enumerate(lista_sensores[9:13]):  # Sensores 10 a 13
                 df_filtrado_sensor = X_test_pivoted_with_results[['ciclo_sequencial', 'id', sensor]].rename(columns={sensor: 'valor', 'ciclo_sequencial': 'ciclo'})
-
                 # Criar um gráfico Altair com interatividade
                 chart = alt.Chart(df_filtrado_sensor).mark_line().encode(
                     x='ciclo',
@@ -282,14 +273,11 @@ else:
                 ).properties(
                     title=f'{nomes_sensores[idx + 9]}'
                 ).interactive()  # Permite zoom e pan
-
                 # Atualizar o gráfico no espaço reservado correspondente na coluna 3
                 placeholders_col3[idx].altair_chart(chart, use_container_width=True)
-
             # Atualizar os gráficos na coluna 4 (gráficos 14 a 17)
             for idx, sensor in enumerate(lista_sensores[13:]):  # Sensores 14 a 17
                 df_filtrado_sensor = X_test_pivoted_with_results[['ciclo_sequencial', 'id', sensor]].rename(columns={sensor: 'valor', 'ciclo_sequencial': 'ciclo'})
-
                 # Criar um gráfico Altair com interatividade
                 chart = alt.Chart(df_filtrado_sensor).mark_line().encode(
                     x='ciclo',
@@ -299,9 +287,5 @@ else:
                 ).properties(
                     title=f'{nomes_sensores[idx + 13]}'
                 ).interactive()  # Permite zoom e pan
-
-                # Atualizar o gráfico no espaço reservado correspondente na coluna 4
-                placeholders_col4[idx].altair_chart(chart, use_container_width=True)
-
                 # Atualizar o gráfico no espaço reservado correspondente na coluna 4
                 placeholders_col4[idx].altair_chart(chart, use_container_width=True)
