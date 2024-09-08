@@ -271,7 +271,11 @@ else:
             color_scale_accumulator = alt.Scale(domain=[90, 100, 115, 130], range=['red', 'orange', 'yellow', 'green'])
 
             # Função para criar o gráfico de status timeline
-            def plot_status_timeline(df, sensor_col, title, color_scale):
+            def plot_status_timeline(df, sensor_col, title, color_scale, num_instancias):
+                # Definindo uma altura básica por instância, por exemplo, 50px por instância
+                height_per_instance = 50
+                chart_height = max(150, num_instancias * height_per_instance)  # Altura mínima de 150
+            
                 chart = alt.Chart(df).mark_rect().encode(
                     x=alt.X('ciclo_sequencial:O', title='Ciclo'),
                     y=alt.Y('id:N', title=''),
@@ -280,10 +284,12 @@ else:
                 ).properties(
                     title=title,
                     width=800,
-                    height=150
+                    height=chart_height
                 )
                 return chart
 
+            num_instancias = len(instancias_para_teste)
+            
             # Exibir gráficos de status timeline em duas colunas
             cooler_chart = plot_status_timeline(X_test_pivoted_with_results, 'cooler_prediction', 'Status Resfriador', color_scale_cooler)
             valve_chart = plot_status_timeline(X_test_pivoted_with_results, 'valve_prediction', 'Status Válvula', color_scale_valve)
