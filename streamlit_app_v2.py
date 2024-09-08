@@ -121,10 +121,16 @@ else:
             X_test_pivoted = X_test_pivoted.drop(columns=['instancia', 'ciclo_sequencial', 'id'])
             # Aplicar cada modelo e prever o resultado
             # Aplicar os modelos e prever o resultado
-            cooler_predictions = model_xgb_cooler.predict(X_test_pivoted)
+            cooler_predictions = model_xgb_cooler.predict(X_test_pivoted)               
             valve_predictions = model_xgb_valve.predict(X_test_pivoted)
             leakage_predictions = model_xgb_leakage.predict(X_test_pivoted)
             accumulator_predictions = model_xgb_accumulator.predict(X_test_pivoted)
+
+            st.write(cooler_predictions)
+            st.write(valve_predictions)
+            st.write(leakage_predictions)
+            st.write(accumulator_predictions)
+            
             # Adicionar as previsões ao DataFrame filtrado
             X_test_pivoted_with_results = df_sintetico_concatenado_sem_scaler[
                 (df_sintetico_concatenado_sem_scaler['id'].isin(instancias_para_teste)) & 
