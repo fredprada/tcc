@@ -243,9 +243,9 @@ else:
             # Criar um DataFrame com os resultados
             resultados_df = pd.DataFrame({
                 'Instância': instancia_list,
-                'Cooler': cooler_status_list,
+                'Resfriador': cooler_status_list,
                 'Válvula': valve_status_list,
-                'Vazamento': leakage_status_list,
+                'Motor': leakage_status_list,
                 'Acumulador': accumulator_status_list
             })
         
@@ -283,9 +283,9 @@ else:
                 return chart
 
             # Exibir gráficos de status timeline em duas colunas
-            cooler_chart = plot_status_timeline(X_test_pivoted_with_results, 'cooler_prediction', 'Status Cooler', color_scale_cooler)
+            cooler_chart = plot_status_timeline(X_test_pivoted_with_results, 'cooler_prediction', 'Status Resfriador', color_scale_cooler)
             valve_chart = plot_status_timeline(X_test_pivoted_with_results, 'valve_prediction', 'Status Válvula', color_scale_valve)
-            leakage_chart = plot_status_timeline(X_test_pivoted_with_results, 'leakage_prediction', 'Status Vazamento', color_scale_leakage)
+            leakage_chart = plot_status_timeline(X_test_pivoted_with_results, 'leakage_prediction', 'Status Motor', color_scale_leakage)
             accumulator_chart = plot_status_timeline(X_test_pivoted_with_results, 'accumulator_prediction', 'Status Acumulador', color_scale_accumulator)
     
             # Atualizar os placeholders com os gráficos de status
