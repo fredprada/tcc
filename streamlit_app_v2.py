@@ -100,6 +100,9 @@ else:
     # Inicialize `num_ciclos` antes do uso
     num_ciclos = 1  # Começa com o ciclo inicial, pode ser ajustado conforme necessário
     
+    # Criar espaço reservado para a tabela
+    tabela_placeholder = st.empty()
+
     # Criar quatro colunas para os gráficos
     col1, col2, col3, col4 = st.columns(4)
 
@@ -135,42 +138,36 @@ else:
             #         X_test_pivoted[sensor] = 0
             X_test_pivoted = X_test_pivoted.drop(columns=['instancia', 'ciclo_sequencial', 'id'])
             # Aplicar cada modelo e prever o resultado
+            # Aplicar os modelos e prever o resultado
             cooler_predictions = model_xgb_cooler.predict(X_test_pivoted)
             valve_predictions = model_xgb_valve.predict(X_test_pivoted)
             leakage_predictions = model_xgb_leakage.predict(X_test_pivoted)
             accumulator_predictions = model_xgb_accumulator.predict(X_test_pivoted)
-            def load_from_github(file_url):
-                response = requests.get(file_url)
-                response.raise_for_status()  # Garantir que a requisição foi bem-sucedida
-                return joblib.load(BytesIO(response.content))
-            # URLs dos encoders no GitHub
-            encoder_cooler_url = base_url + "encoder_cooler.pkl"
-            encoder_valve_url = base_url + "encoder_valve.pkl"
-            encoder_leakage_url = base_url + "encoder_leakage.pkl"
-            encoder_accumulator_url = base_url + "encoder_accumulator.pkl"
-            # Carregar encoders do GitHub
-            encoder_cooler = load_from_github(encoder_cooler_url)
-            encoder_valve = load_from_github(encoder_valve_url)
-            encoder_leakage = load_from_github(encoder_leakage_url)
-            encoder_accumulator = load_from_github(encoder_accumulator_url)
-            cooler_predictions_original = encoder_cooler.inverse_transform(cooler_predictions)
-            valve_predictions_original = encoder_valve.inverse_transform(valve_predictions)
-            leakage_predictions_original = encoder_leakage.inverse_transform(leakage_predictions)
-            accumulator_predictions_original = encoder_accumulator.inverse_transform(accumulator_predictions)
+
             # Adicionar as previsões ao DataFrame filtrado
-            X_test_pivoted_with_results = df_sintetico_concatenado_sem_scaler[(df_sintetico_concatenado_sem_scaler['id'].isin(instancias_para_teste)) & (df_sintetico_concatenado_sem_scaler['ciclo_sequencial'] <= num_ciclos)]
-            X_test_pivoted_with_results['cooler_prediction'] = cooler_predictions_original
-            X_test_pivoted_with_results['valve_prediction'] = valve_predictions_original
-            X_test_pivoted_with_results['leakage_prediction'] = leakage_predictions_original
-            X_test_pivoted_with_results['accumulator_prediction'] = accumulator_predictions_original
+            X_test_pivoted_with_results = df_sintetico_concatenado_sem_scaler[
+                (df_sintetico_concatenado_sem_scaler['id'].isin(instancias_para_teste)) & 
+                (df_sintetico_concatenado_sem_scaler['ciclo_sequencial'] <= num_ciclos)
+            ]
+            X_test_pivoted_with_results['cooler_prediction'] = cooler_predictions
+            X_test_pivoted_with_results['valve_prediction'] = valve_predictions
+            X_test_pivoted_with_results['leakage_prediction'] = leakage_predictions
+            X_test_pivoted_with_results['accumulator_prediction'] = accumulator_predictions
             
-            # # Verificar as primeiras linhas do DataFrame com previsões
-            # st.write("X_test_pivoted_with_results:", X_test_pivoted_with_results)
             # Adicionar a coluna de instância de volta ao DataFrame
             X_test_pivoted_with_results['instancia'] = instancias
             X_test_pivoted_with_results['id'] = ids
+
             # Filtrar os resultados do ciclo selecionado
             resultados_ciclos = X_test_pivoted_with_results[X_test_pivoted_with_results['ciclo_sequencial'] == num_ciclos]
+
+            # Atualizar a tabela de status a cada ciclo
+            instancia_list = []
+            cooler_status_list = []
+            valve_status_list = []
+            leakage_status_list = []
+            accumulator_status_list = []
+
             # Função para converter predições em mensagens
             def get_status_message(prediction, sensor_type):
                 if sensor_type == 'cooler':
@@ -207,12 +204,7 @@ else:
                         return "🟠 Pressão severamente reduzida"
                     elif prediction == 90:
                         return "🔴 Próximo da falha total"
-            # Criar listas para armazenar os dados
-            instancia_list = []
-            cooler_status_list = []
-            valve_status_list = []
-            leakage_status_list = []
-            accumulator_status_list = []
+
             # Exibir os resultados para cada instância
             for instancia in instancias_para_teste:
                 resultado_instancia = resultados_ciclos[resultados_ciclos['id'] == instancia]
@@ -228,34 +220,28 @@ else:
                     valve_status_list.append(get_status_message(resultado_valve, 'valve'))
                     leakage_status_list.append(get_status_message(resultado_leakage, 'leakage'))
                     accumulator_status_list.append(get_status_message(resultado_accumulator, 'accumulator'))
+
             # Criar um DataFrame com os resultados
             resultados_df = pd.DataFrame({
                 'Instância': instancia_list,
                 'Cooler': cooler_status_list,
-                'Resfriador': cooler_status_list,
                 'Válvula': valve_status_list,
                 'Vazamento': leakage_status_list,
-                'Motor': leakage_status_list,
                 'Acumulador': accumulator_status_list
             })
         
-            # Aplicar estilo para alinhar todas as colunas à esquerda e ajustar o tamanho das colunas
+            # Aplicar estilo e atualizar a tabela
             def align_left(df):
                 return df.style.set_properties(**{'text-align': 'left'})
-            # Mostrar o DataFrame na tela com estilo aplicado
-            st.table(align_left(resultados_df).set_table_styles([{
+            
+            # Atualizar a tabela no espaço reservado
+            tabela_placeholder.table(align_left(resultados_df).set_table_styles([{
                 'selector': 'th',
                 'props': [('text-align', 'left')]
             }, {
                 'selector': 'td',
                 'props': [('text-align', 'left')]
             }]))
-            
-            # Filtrar os dados com base no número de ciclos
-            X_test_pivoted_with_results = df_sintetico_concatenado_sem_scaler[
-                (df_sintetico_concatenado_sem_scaler['id'].isin(instancias_para_teste)) & 
-                (df_sintetico_concatenado_sem_scaler['ciclo_sequencial'] <= num_ciclos)
-            ]
 
             # Atualizar os gráficos na coluna 1 (gráficos 1 a 5)
             for idx, sensor in enumerate(lista_sensores[:5]):  # Sensores 1 a 5
@@ -270,9 +256,12 @@ else:
                 ).properties(
                     title=f'{nomes_sensores[idx]}'
                 ).interactive()  # Permite zoom e pan
-
-                # Atualizar o gráfico no espaço reservado correspondente na coluna 1
-                placeholders_col1[idx].altair_chart(chart, use_container_width=True)
+            
+            # Filtrar os dados com base no número de ciclos
+            X_test_pivoted_with_results = df_sintetico_concatenado_sem_scaler[
+                (df_sintetico_concatenado_sem_scaler['id'].isin(instancias_para_teste)) & 
+                (df_sintetico_concatenado_sem_scaler['ciclo_sequencial'] <= num_ciclos)
+            ]
 
             # Atualizar os gráficos na coluna 2 (gráficos 6 a 9)
             for idx, sensor in enumerate(lista_sensores[5:9]):  # Sensores 6 a 9
