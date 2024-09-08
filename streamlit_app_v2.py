@@ -291,11 +291,11 @@ else:
             num_instancias = len(instancias_para_teste)
             
             # Exibir gráficos de status timeline em duas colunas
-            cooler_chart = plot_status_timeline(X_test_pivoted_with_results, 'cooler_prediction', 'Status Resfriador', color_scale_cooler)
-            valve_chart = plot_status_timeline(X_test_pivoted_with_results, 'valve_prediction', 'Status Válvula', color_scale_valve)
-            leakage_chart = plot_status_timeline(X_test_pivoted_with_results, 'leakage_prediction', 'Status Motor', color_scale_leakage)
-            accumulator_chart = plot_status_timeline(X_test_pivoted_with_results, 'accumulator_prediction', 'Status Acumulador', color_scale_accumulator)
-    
+            cooler_chart = plot_status_timeline(X_test_pivoted_with_results, 'cooler_prediction', 'Status Resfriador', color_scale_cooler, num_instancias)
+            valve_chart = plot_status_timeline(X_test_pivoted_with_results, 'valve_prediction', 'Status Válvula', color_scale_valve, num_instancias)
+            leakage_chart = plot_status_timeline(X_test_pivoted_with_results, 'leakage_prediction', 'Status Motor', color_scale_leakage, num_instancias)
+            accumulator_chart = plot_status_timeline(X_test_pivoted_with_results, 'accumulator_prediction', 'Status Acumulador', color_scale_accumulator, num_instancias)
+                
             # Atualizar os placeholders com os gráficos de status
             status_placeholders_col1[0].altair_chart(cooler_chart, use_container_width=True)
             status_placeholders_col2[0].altair_chart(valve_chart, use_container_width=True)
