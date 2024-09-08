@@ -90,13 +90,14 @@ else:
     tabela_placeholder = st.empty()
     # Criar quatro colunas para os gráficos
     col1, col2, col3, col4 = st.columns(4)
+    
+    status_placeholders = [st.empty() for _ in range(4)]
+    
     # Criar espaços reservados para os gráficos em quatro colunas
     placeholders_col1 = [col1.empty() for _ in range(5)]  # Gráficos 1 a 5
     placeholders_col2 = [col2.empty() for _ in range(4)]  # Gráficos 6 a 9
     placeholders_col3 = [col3.empty() for _ in range(4)]  # Gráficos 10 a 13
-    placeholders_col4 = [col4.empty() for _ in range(4)]  # Gráficos 14 a 17
-
-    status_placeholders = [st.empty() for _ in range(4)]
+    placeholders_col4 = [col4.empty() for _ in range(4)]  # Gráficos 14 a 17    
     
     if st.button("Start"):
         for num_ciclos in range(1, max_ciclo + 1):
@@ -265,13 +266,13 @@ else:
             def plot_status_timeline(df, sensor_col, title, color_scale):
                 chart = alt.Chart(df).mark_rect().encode(
                     x=alt.X('ciclo_sequencial:O', title='Ciclo'),
-                    y=alt.Y('id:N', title='Instância'),
+                    y=alt.Y('id:N'),
                     color=alt.Color(f'{sensor_col}:O', scale=color_scale, legend=alt.Legend(title="Status")),
                     tooltip=['id', 'ciclo_sequencial', sensor_col]
                 ).properties(
                     title=title,
                     width=800,
-                    height=120
+                    height=150
                 )
                 return chart
 
