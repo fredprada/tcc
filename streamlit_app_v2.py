@@ -243,25 +243,22 @@ else:
                 'props': [('text-align', 'left')]
             }]))
 
-            # Atualizar os gráficos na coluna 1 (gráficos 1 a 5)
-            for idx, sensor in enumerate(lista_sensores[:5]):  # Sensores 1 a 5
+            # Atualizar os gráficos na coluna 1 (gráficos 1 a 4)
+            for idx, sensor in enumerate(lista_sensores[1:4]):  # Sensores 1 a 4
                 df_filtrado_sensor = X_test_pivoted_with_results[['ciclo_sequencial', 'id', sensor]].rename(columns={sensor: 'valor', 'ciclo_sequencial': 'ciclo'})
 
                 # Criar um gráfico Altair com interatividade
                 chart = alt.Chart(df_filtrado_sensor).mark_line().encode(
                     x='ciclo',
-                    y=alt.Y('valor', title=f'Valor ({unidades_sensores[idx]})'),
+                    y=alt.Y('valor', title=f'Valor ({unidades_sensores[idx + 5]})'),  # Ajustar o índice
                     color=alt.Color('id:N', legend=alt.Legend(title="Instância")),
                     tooltip=['id', 'ciclo', 'valor']
                 ).properties(
-                    title=f'{nomes_sensores[idx]}'
+                    title=f'{nomes_sensores[idx + 5]}'
                 ).interactive()  # Permite zoom e pan
-            
-            # Filtrar os dados com base no número de ciclos
-            X_test_pivoted_with_results = df_sintetico_concatenado_sem_scaler[
-                (df_sintetico_concatenado_sem_scaler['id'].isin(instancias_para_teste)) & 
-                (df_sintetico_concatenado_sem_scaler['ciclo_sequencial'] <= num_ciclos)
-            ]
+
+                # Atualizar o gráfico no espaço reservado correspondente na coluna 2
+                placeholders_col2[idx].altair_chart(chart, use_container_width=True)
 
             # Atualizar os gráficos na coluna 2 (gráficos 6 a 9)
             for idx, sensor in enumerate(lista_sensores[5:9]):  # Sensores 6 a 9
