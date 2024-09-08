@@ -291,10 +291,10 @@ else:
             accumulator_chart = plot_status_timeline(X_test_pivoted_with_results, 'accumulator_prediction', 'Status Acumulador', color_scale_accumulator)
     
             # Atualizar os placeholders com os gráficos de status
-            status_placeholders_col1.altair_chart(cooler_chart, use_container_width=True)
-            status_placeholders_col2.altair_chart(valve_chart, use_container_width=True)
-            status_placeholders_col3.altair_chart(leakage_chart, use_container_width=True)
-            status_placeholders_col4.altair_chart(accumulator_chart, use_container_width=True)
+            status_placeholders_col1[0].altair_chart(cooler_chart, use_container_width=True)
+            status_placeholders_col2[0].altair_chart(valve_chart, use_container_width=True)
+            status_placeholders_col3[0].altair_chart(leakage_chart, use_container_width=True)
+            status_placeholders_col4[0].altair_chart(accumulator_chart, use_container_width=True)
 
 
             # Agora os gráficos dos sensores serão exibidos depois dos gráficos de status
