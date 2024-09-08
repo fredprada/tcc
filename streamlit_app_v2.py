@@ -97,7 +97,7 @@ else:
     placeholders_col4 = [col4.empty() for _ in range(4)]  # Gráficos 14 a 17
     if st.button("Start"):
         for num_ciclos in range(1, max_ciclo + 1):
-            time.sleep(1)  # Simular um delay de 1 segundo para cada ciclo
+            time.sleep(0.5)  # Simular um delay de 1 segundo para cada ciclo
             # Pivotar os dados para preparar para o modelo
             pivot_x_train = df_tratado.pivot(index=['instancia', 'ciclo_ajustado'], columns='sensor', values='valor').reset_index()
             X_test_pivoted = df_sintetico_concatenado.copy()
@@ -209,6 +209,7 @@ else:
             # Aplicar estilo e atualizar a tabela
             def align_left(df):
                 return df.style.set_properties(**{'text-align': 'left'})
+            tabela_placeholder.empty() 
             
             # Atualizar a tabela no espaço reservado
             tabela_placeholder.table(align_left(resultados_df).set_table_styles([{
