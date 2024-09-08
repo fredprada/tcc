@@ -148,11 +148,12 @@ else:
             valve_predictions_original = encoder_valve.inverse_transform(valve_predictions)
             leakage_predictions_original = encoder_leakage.inverse_transform(leakage_predictions)
             accumulator_predictions_original = encoder_accumulator.inverse_transform(accumulator_predictions)
-            
-            st.write(cooler_predictions_original)
-            st.write(valve_predictions_original)
-            st.write(leakage_predictions_original)
-            st.write(accumulator_predictions_original)
+
+            # para troubleshooting:
+            # st.write(cooler_predictions_original)
+            # st.write(valve_predictions_original)
+            # st.write(leakage_predictions_original)
+            # st.write(accumulator_predictions_original)
             
             # Adicionar as previsões ao DataFrame filtrado
             X_test_pivoted_with_results = df_sintetico_concatenado_sem_scaler[
