@@ -126,19 +126,11 @@ else:
             
             # Aplicar o scaler separadamente para cada sensor
             scalers = {sensor: MinMaxScaler() for sensor in pivot_x_train.columns if sensor not in ['instancia', 'ciclo_ajustado']}
-            # Aplicar o scaler nos dados de treino
             for sensor in scalers:
                 if sensor in pivot_x_train.columns:
                     pivot_x_train[sensor] = scalers[sensor].fit_transform(pivot_x_train[[sensor]])
-            # # Aplicar o scaler nos dados de teste
-            # for sensor in scalers:
-            #     if sensor in X_test_pivoted.columns:
-            #         X_test_pivoted[sensor] = scalers[sensor].transform(X_test_pivoted[[sensor]])
-            #     else:
-            #         X_test_pivoted[sensor] = 0
-            X_test_pivoted = X_test_pivoted.drop(columns=['instancia', 'ciclo_sequencial', 'id'])
+
             # Aplicar cada modelo e prever o resultado
-            # Aplicar os modelos e prever o resultado
             cooler_predictions = model_xgb_cooler.predict(X_test_pivoted)
             valve_predictions = model_xgb_valve.predict(X_test_pivoted)
             leakage_predictions = model_xgb_leakage.predict(X_test_pivoted)
@@ -243,22 +235,22 @@ else:
                 'props': [('text-align', 'left')]
             }]))
 
-            # Atualizar os gráficos na coluna 1 (gráficos 1 a 4)
-            for idx, sensor in enumerate(lista_sensores[1:4]):  # Sensores 1 a 4
+            # Atualizar os gráficos na coluna 1 (gráficos 1 a 5)
+            for idx, sensor in enumerate(lista_sensores[:5]):  # Sensores 1 a 5
                 df_filtrado_sensor = X_test_pivoted_with_results[['ciclo_sequencial', 'id', sensor]].rename(columns={sensor: 'valor', 'ciclo_sequencial': 'ciclo'})
 
                 # Criar um gráfico Altair com interatividade
                 chart = alt.Chart(df_filtrado_sensor).mark_line().encode(
                     x='ciclo',
-                    y=alt.Y('valor', title=f'Valor ({unidades_sensores[idx + 5]})'),  # Ajustar o índice
+                    y=alt.Y('valor', title=f'Valor ({unidades_sensores[idx]})'),
                     color=alt.Color('id:N', legend=alt.Legend(title="Instância")),
                     tooltip=['id', 'ciclo', 'valor']
                 ).properties(
-                    title=f'{nomes_sensores[idx + 5]}'
+                    title=f'{nomes_sensores[idx]}'
                 ).interactive()  # Permite zoom e pan
 
-                # Atualizar o gráfico no espaço reservado correspondente na coluna 2
-                placeholders_col2[idx].altair_chart(chart, use_container_width=True)
+                # Atualizar o gráfico no espaço reservado correspondente na coluna 1
+                placeholders_col1[idx].altair_chart(chart, use_container_width=True)
 
             # Atualizar os gráficos na coluna 2 (gráficos 6 a 9)
             for idx, sensor in enumerate(lista_sensores[5:9]):  # Sensores 6 a 9
@@ -307,6 +299,9 @@ else:
                 ).properties(
                     title=f'{nomes_sensores[idx + 13]}'
                 ).interactive()  # Permite zoom e pan
+
+                # Atualizar o gráfico no espaço reservado correspondente na coluna 4
+                placeholders_col4[idx].altair_chart(chart, use_container_width=True)
 
                 # Atualizar o gráfico no espaço reservado correspondente na coluna 4
                 placeholders_col4[idx].altair_chart(chart, use_container_width=True)
