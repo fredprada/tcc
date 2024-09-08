@@ -97,7 +97,8 @@ else:
     placeholders_col4 = [col4.empty() for _ in range(4)]  # Gráficos 14 a 17
     if st.button("Start"):
         for num_ciclos in range(1, max_ciclo + 1):
-            time.sleep(0.5)  # Simular um delay de 1 segundo para cada ciclo
+            time.sleep(0.2)  
+            
             # Pivotar os dados para preparar para o modelo
             pivot_x_train = df_tratado.pivot(index=['instancia', 'ciclo_ajustado'], columns='sensor', values='valor').reset_index()
             X_test_pivoted = df_sintetico_concatenado.copy()
@@ -260,7 +261,8 @@ else:
                     color=alt.Color('id:N', legend=alt.Legend(title="Instância")),
                     tooltip=['id', 'ciclo', 'valor']
                 ).properties(
-                    title=f'{nomes_sensores[idx]}'
+                    title=f'{nomes_sensores[idx]}',
+                    height=150
                 ).interactive()  # Permite zoom e pan
                 # Atualizar o gráfico no espaço reservado correspondente na coluna 2
                 placeholders_col1[idx].altair_chart(chart, use_container_width=True)
@@ -275,7 +277,8 @@ else:
                     color=alt.Color('id:N', legend=alt.Legend(title="Instância")),
                     tooltip=['id', 'ciclo', 'valor']
                 ).properties(
-                    title=f'{nomes_sensores[idx + 5]}'
+                    title=f'{nomes_sensores[idx + 5]}',
+                    height=150
                 ).interactive()  # Permite zoom e pan
                 # Atualizar o gráfico no espaço reservado correspondente na coluna 2
                 placeholders_col2[idx].altair_chart(chart, use_container_width=True)
@@ -290,7 +293,8 @@ else:
                     color=alt.Color('id:N', legend=alt.Legend(title="Instância")),
                     tooltip=['id', 'ciclo', 'valor']
                 ).properties(
-                    title=f'{nomes_sensores[idx + 9]}'
+                    title=f'{nomes_sensores[idx + 9]}',
+                    height=150
                 ).interactive()  # Permite zoom e pan
                 # Atualizar o gráfico no espaço reservado correspondente na coluna 3
                 placeholders_col3[idx].altair_chart(chart, use_container_width=True)
@@ -305,7 +309,8 @@ else:
                     color=alt.Color('id:N', legend=alt.Legend(title="Instância")),
                     tooltip=['id', 'ciclo', 'valor']
                 ).properties(
-                    title=f'{nomes_sensores[idx + 13]}'
+                    title=f'{nomes_sensores[idx + 13]}',
+                    height=150
                 ).interactive()  # Permite zoom e pan
                 # Atualizar o gráfico no espaço reservado correspondente na coluna 4
                 placeholders_col4[idx].altair_chart(chart, use_container_width=True)
