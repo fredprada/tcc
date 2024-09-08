@@ -232,13 +232,11 @@ else:
                 ).properties(
                     title=f'{nomes_sensores[idx]}'
                 ).interactive()  # Permite zoom e pan
-
                 # Atualizar o gráfico no espaço reservado correspondente na coluna 2
-                placeholders_col2[idx].altair_chart(chart, use_container_width=True)
-
+                placeholders_col1[idx].altair_chart(chart, use_container_width=True)
+                
             # Atualizar os gráficos na coluna 2 (gráficos 6 a 9)
             for idx, sensor in enumerate(lista_sensores[5:9]):  # Sensores 6 a 9
-  
                 df_filtrado_sensor = X_test_pivoted_with_results[['ciclo_sequencial', 'id', sensor]].rename(columns={sensor: 'valor', 'ciclo_sequencial': 'ciclo'})
                 # Criar um gráfico Altair com interatividade
                 chart = alt.Chart(df_filtrado_sensor).mark_line().encode(
@@ -251,6 +249,7 @@ else:
                 ).interactive()  # Permite zoom e pan
                 # Atualizar o gráfico no espaço reservado correspondente na coluna 2
                 placeholders_col2[idx].altair_chart(chart, use_container_width=True)
+                
             # Atualizar os gráficos na coluna 3 (gráficos 10 a 13)
             for idx, sensor in enumerate(lista_sensores[9:13]):  # Sensores 10 a 13
                 df_filtrado_sensor = X_test_pivoted_with_results[['ciclo_sequencial', 'id', sensor]].rename(columns={sensor: 'valor', 'ciclo_sequencial': 'ciclo'})
@@ -265,6 +264,7 @@ else:
                 ).interactive()  # Permite zoom e pan
                 # Atualizar o gráfico no espaço reservado correspondente na coluna 3
                 placeholders_col3[idx].altair_chart(chart, use_container_width=True)
+                
             # Atualizar os gráficos na coluna 4 (gráficos 14 a 17)
             for idx, sensor in enumerate(lista_sensores[13:]):  # Sensores 14 a 17
                 df_filtrado_sensor = X_test_pivoted_with_results[['ciclo_sequencial', 'id', sensor]].rename(columns={sensor: 'valor', 'ciclo_sequencial': 'ciclo'})
