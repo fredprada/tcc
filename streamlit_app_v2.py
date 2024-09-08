@@ -151,11 +151,11 @@ else:
             accumulator_predictions_original = encoder_accumulator.inverse_transform(accumulator_predictions)
 
             # para troubleshooting:
-            st.write(cooler_predictions_original)
+            # st.write(cooler_predictions_original)
             # st.write(valve_predictions_original)
             # st.write(leakage_predictions_original)
             # st.write(accumulator_predictions_original)
-            
+        
             # Adicionar as previsões ao DataFrame filtrado
             X_test_pivoted_with_results = df_sintetico_concatenado_sem_scaler[
                 (df_sintetico_concatenado_sem_scaler['id'].isin(instancias_para_teste)) & 
@@ -169,8 +169,42 @@ else:
             # Adicionar a coluna de instância de volta ao DataFrame
             X_test_pivoted_with_results['instancia'] = instancias
             X_test_pivoted_with_results['id'] = ids
+            
             # Filtrar os resultados do ciclo selecionado
             resultados_ciclos = X_test_pivoted_with_results[X_test_pivoted_with_results['ciclo_sequencial'] == num_ciclos]
+
+            # Mapear as cores para as previsões
+            color_scale_cooler = alt.Scale(domain=[3, 20, 100], range=['red', 'orange', 'green'])
+            color_scale_valve = alt.Scale(domain=[73, 80, 90, 100], range=['red', 'orange', 'yellow', 'green'])
+            color_scale_leakage = alt.Scale(domain=[0, 1, 2], range=['green', 'yellow', 'red'])
+            color_scale_accumulator = alt.Scale(domain=[90, 100, 115, 130], range=['red', 'orange', 'yellow', 'green'])
+
+            # Função para criar o gráfico de status timeline
+            def plot_status_timeline(df, sensor_col, title, color_scale):
+                chart = alt.Chart(df).mark_rect().encode(
+                    x=alt.X('ciclo_sequencial:O', title='Ciclo'),
+                    y=alt.Y('id:N', title='Instância'),
+                    color=alt.Color(f'{sensor_col}:O', scale=color_scale, legend=alt.Legend(title="Status")),
+                    tooltip=['id', 'ciclo_sequencial', sensor_col]
+                ).properties(
+                    title=title,
+                    width=800,
+                    height=200
+                )
+                return chart
+
+            # Criar gráficos de status timeline para cada previsão
+            cooler_chart = plot_status_timeline(X_test_pivoted_with_results, 'cooler_prediction', 'Status Cooler', color_scale_cooler)
+            valve_chart = plot_status_timeline(X_test_pivoted_with_results, 'valve_prediction', 'Status Válvula', color_scale_valve)
+            leakage_chart = plot_status_timeline(X_test_pivoted_with_results, 'leakage_prediction', 'Status Vazamento', color_scale_leakage)
+            accumulator_chart = plot_status_timeline(X_test_pivoted_with_results, 'accumulator_prediction', 'Status Acumulador', color_scale_accumulator)
+
+            # Exibir os gráficos no Streamlit
+            st.altair_chart(cooler_chart, use_container_width=True)
+            st.altair_chart(valve_chart, use_container_width=True)
+            st.altair_chart(leakage_chart, use_container_width=True)
+            st.altair_chart(accumulator_chart, use_container_width=True)
+            
             # Atualizar a tabela de status a cada ciclo
             instancia_list = []
             cooler_status_list = []
