@@ -271,31 +271,49 @@ else:
             color_scale_accumulator = alt.Scale(domain=[90, 100, 115, 130], range=['red', 'orange', 'yellow', 'green'])
 
             # Função para criar o gráfico de status timeline
-            def plot_status_timeline(df, sensor_col, title, color_scale, num_instancias):
-                # Definindo uma altura básica por instância, por exemplo, 50px por instância
+            def plot_status_timeline(df, sensor_col, title, color_scale, num_instancias, domain, range_, legend_labels):
                 height_per_instance = 50
-                chart_height = max(150, num_instancias * height_per_instance)  # Altura mínima de 150
+                chart_height = max(150, num_instancias * height_per_instance)
+            
+                # Aplicar transformações para adicionar as legendas de texto
+                df = df.copy()  # Garantir que o DataFrame original não seja modificado
+                df['status_text'] = df[sensor_col].map(dict(zip(domain, legend_labels)))
             
                 chart = alt.Chart(df).mark_rect().encode(
                     x=alt.X('ciclo_sequencial:O', title='Ciclo'),
                     y=alt.Y('id:N', title=''),
-                    color=alt.Color(f'{sensor_col}:O', scale=color_scale, legend=alt.Legend(title="Status")),
-                    tooltip=['id', 'ciclo_sequencial', sensor_col]
+                    color=alt.Color('status_text:N', scale=alt.Scale(domain=legend_labels, range=range_), legend=alt.Legend(title="Status")),
+                    tooltip=['id', 'ciclo_sequencial', 'status_text']
                 ).properties(
                     title=title,
                     width=800,
                     height=chart_height
                 )
                 return chart
-
-            num_instancias = len(instancias_para_teste)
             
-            # Exibir gráficos de status timeline em duas colunas
-            cooler_chart = plot_status_timeline(X_test_pivoted_with_results, 'cooler_prediction', 'Status Resfriador', color_scale_cooler, num_instancias)
-            valve_chart = plot_status_timeline(X_test_pivoted_with_results, 'valve_prediction', 'Status Válvula', color_scale_valve, num_instancias)
-            leakage_chart = plot_status_timeline(X_test_pivoted_with_results, 'leakage_prediction', 'Status Motor', color_scale_leakage, num_instancias)
-            accumulator_chart = plot_status_timeline(X_test_pivoted_with_results, 'accumulator_prediction', 'Status Acumulador', color_scale_accumulator, num_instancias)
-                
+            # Definir os domínios e as cores, e os rótulos de legenda para cada sensor
+            cooler_domain = [3, 20, 100]
+            cooler_range = ['red', 'orange', 'green']
+            cooler_legend_labels = ["Próximo da falha total", "Eficiência reduzida", "Eficiência total"]
+            
+            valve_domain = [73, 80, 90, 100]
+            valve_range = ['red', 'orange', 'yellow', 'green']
+            valve_legend_labels = ["Próximo da falha total", "Atraso severo", "Pequeno atraso", "Comportamento de comutação ótimo"]
+            
+            leakage_domain = [0, 1, 2]
+            leakage_range = ['green', 'yellow', 'red']
+            leakage_legend_labels = ["Sem vazamento", "Vazamento fraco", "Vazamento severo"]
+            
+            accumulator_domain = [90, 100, 115, 130]
+            accumulator_range = ['red', 'orange', 'yellow', 'green']
+            accumulator_legend_labels = ["Próximo da falha total", "Pressão severamente reduzida", "Pressão levemente reduzida", "Pressão ótima"]
+            
+            # Criar e exibir os gráficos com as legendas de texto
+            cooler_chart = plot_status_timeline(X_test_pivoted_with_results, 'cooler_prediction', 'Status Resfriador', cooler_range, num_instancias, cooler_domain, cooler_range, cooler_legend_labels)
+            valve_chart = plot_status_timeline(X_test_pivoted_with_results, 'valve_prediction', 'Status Válvula', valve_range, num_instancias, valve_domain, valve_range, valve_legend_labels)
+            leakage_chart = plot_status_timeline(X_test_pivoted_with_results, 'leakage_prediction', 'Status Motor', leakage_range, num_instancias, leakage_domain, leakage_range, leakage_legend_labels)
+            accumulator_chart = plot_status_timeline(X_test_pivoted_with_results, 'accumulator_prediction', 'Status Acumulador', accumulator_range, num_instancias, accumulator_domain, accumulator_range, accumulator_legend_labels)
+            
             # Atualizar os placeholders com os gráficos de status
             status_placeholders_col1[0].altair_chart(cooler_chart, use_container_width=True)
             status_placeholders_col2[0].altair_chart(valve_chart, use_container_width=True)
